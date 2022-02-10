@@ -1,0 +1,4 @@
+oled.c:59:13:handler_oled	16	static
+oled.c:69:13:handler_btn	24	static
+oled.c:106:6:API_OLED_START	32	static,ignoring_inline_asm
+oled.c:124:6:API_OLED_CALLBACK	16	static

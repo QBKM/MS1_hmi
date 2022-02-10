@@ -1,0 +1,3 @@
+leds.c:62:13:handler_leds	24	static
+leds.c:252:6:API_LEDS_START	24	static,ignoring_inline_asm
+leds.c:305:6:API_LEDS_SEND_CMD	24	static
