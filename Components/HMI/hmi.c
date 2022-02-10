@@ -103,7 +103,7 @@ static void handler_btn(void* parameters)
  * @brief       init and start the payload task
  * 
  * ************************************************************* **/
-void API_OLED_START(void)
+void API_HMI_START(void)
 {
     BaseType_t status;
 
@@ -121,7 +121,7 @@ void API_OLED_START(void)
  * 
  * @param       cmd 
  * ************************************************************* **/
-void API_OLED_CALLBACK(ENUM_BTN_LIST_t btn)
+void API_HMI_CALLBACK(ENUM_HMI_BTN_t btn)
 {
     xQueueSend(QueueHandle_btn, &btn, (TickType_t)0);
 }

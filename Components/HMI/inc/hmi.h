@@ -20,30 +20,19 @@
 /* ------------------------------------------------------------- --
    types
 -- ------------------------------------------------------------- */
-/* List of commands available for this API. 
- * -> Stop command      : will stop the motors 
- * -> Open/Close command: will run the motors until reach the end */
 typedef enum
 {
-    E_CMD_OLED_NONE,
-    E_CMD_OLED_RED,
-    E_CMD_OLED_GREEN,
-    E_CMD_OLED_BLUE
-}ENUM_OLED_CMD_t;
-
-typedef enum
-{
-    E_LIST_BTN1,
-    E_LIST_BTN2,  
-    E_LIST_BTN3,
-    E_LIST_BTN4
-}ENUM_BTN_LIST_t;
+    E_HMI_BTN1,
+    E_HMI_BTN2,  
+    E_HMI_BTN3,
+    E_HMI_BTN4
+}ENUM_HMI_BTN_t;
 
 /* ------------------------------------------------------------- --
    function propotypes
 -- ------------------------------------------------------------- */
-void API_OLED_START(void);
-void API_OLED_CALLBACK(ENUM_BTN_LIST_t btn);
+void API_HMI_START(void);
+void API_HMI_CALLBACK(ENUM_HMI_BTN_t btn);
 
 /* ------------------------------------------------------------- --
    end of file

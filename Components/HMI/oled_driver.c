@@ -1,9 +1,22 @@
 #include "oled_driver.h"
 #include "oled_ascii.h"
-#include "main.h"
+
 #include "gpio.h"
 
 
+#define INTERFACE_4WIRE_SPI 1
+#define INTERFACE_3WIRE_SPI !(INTERFACE_4WIRE_SPI)
+
+
+#if INTERFACE_4WIRE_SPI
+  #if INTERFACE_3WIRE_SPI
+    #error "SPI Setting Error !!"
+  #endif
+#elif INTERFACE_3WIRE_SPI
+
+#else
+  #error "SPI Setting Error !!"
+#endif
 
 uint8_t color_byte[2],color_fill_byte[2];
 
