@@ -1,4 +1,13 @@
-/* vim: set ai et ts=4 sw=4: */
+/** ************************************************************* *
+ * @file        ssd1351.h
+ * @brief       
+ * 
+ * @date        2022-02-10
+ * @author      Quentin Bakrim (quentin.bakrim@hotmail.fr)
+ * 
+ * Mines Space
+ * 
+ * ************************************************************* **/
 #ifndef __SSD1351_H__
 #define __SSD1351_H__
 
@@ -40,7 +49,6 @@ extern SPI_HandleTypeDef SSD1351_SPI_PORT;
 
 // call before initializing any SPI devices
 void SSD1351_Unselect();
-
 void SSD1351_Init(void);
 void SSD1351_DrawPixel(uint16_t x, uint16_t y, uint16_t color);
 void SSD1351_WriteString(uint16_t x, uint16_t y, const char* str, FontDef font, uint16_t color, uint16_t bgcolor);
