@@ -28,7 +28,7 @@
 #include "task.h"
 
 #include "leds.h"
-#include "oled.h"
+#include "hmi.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -168,25 +168,25 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     {
         case BTN1_Pin :
             //SEGGER_SYSVIEW_RecordEnterISR();
-            API_HMI_CALLBACK(E_LIST_BTN1);
+            API_HMI_CALLBACK(E_HMI_BTN1);
             //SEGGER_SYSVIEW_RecordExitISR();
             break;
 
         case BTN2_Pin :
             //SEGGER_SYSVIEW_RecordEnterISR();
-            API_HMI_CALLBACK(E_LIST_BTN2);
+            API_HMI_CALLBACK(E_HMI_BTN2);
             //SEGGER_SYSVIEW_RecordExitISR();
             break;
 
         case BTN3_Pin :
             //SEGGER_SYSVIEW_RecordEnterISR();
-            API_HMI_CALLBACK(E_LIST_BTN3);
+            API_HMI_CALLBACK(E_HMI_BTN3);
             //SEGGER_SYSVIEW_RecordExitISR();
             break;
 
         case BTN4_Pin :
             //SEGGER_SYSVIEW_RecordEnterISR();
-            API_HMI_CALLBACK(E_LIST_BTN4);
+            API_HMI_CALLBACK(E_HMI_BTN4);
             //SEGGER_SYSVIEW_RecordExitISR();
             break;
         

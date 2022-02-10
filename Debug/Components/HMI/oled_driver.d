@@ -31,7 +31,7 @@ Components/HMI/oled_driver.o: ../Components/HMI/oled_driver.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
  ../Core/Inc/spi.h ../Core/Inc/main.h \
  C:/Users/Quent/Desktop/STM_Workspace/MS1_Workspace/MS1_hmi_446/Components/HMI/inc/oled_ascii.h \
- ../Core/Inc/main.h ../Core/Inc/gpio.h
+ ../Core/Inc/gpio.h
 
 C:/Users/Quent/Desktop/STM_Workspace/MS1_Workspace/MS1_hmi_446/Components/HMI/inc/oled_driver.h:
 
@@ -98,7 +98,5 @@ C:/Users/Quent/Desktop/STM_Workspace/MS1_Workspace/MS1_hmi_446/Components/HMI/in
 ../Core/Inc/main.h:
 
 C:/Users/Quent/Desktop/STM_Workspace/MS1_Workspace/MS1_hmi_446/Components/HMI/inc/oled_ascii.h:
-
-../Core/Inc/main.h:
 
 ../Core/Inc/gpio.h:

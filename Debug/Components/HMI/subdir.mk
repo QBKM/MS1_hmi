@@ -6,8 +6,8 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../Components/HMI/fonts.c \
+../Components/HMI/hmi.c \
 ../Components/HMI/leds.c \
-../Components/HMI/oled.c \
 ../Components/HMI/oled_ascii.c \
 ../Components/HMI/oled_driver.c \
 ../Components/HMI/oled_gfx.c \
@@ -15,8 +15,8 @@ C_SRCS += \
 
 OBJS += \
 ./Components/HMI/fonts.o \
+./Components/HMI/hmi.o \
 ./Components/HMI/leds.o \
-./Components/HMI/oled.o \
 ./Components/HMI/oled_ascii.o \
 ./Components/HMI/oled_driver.o \
 ./Components/HMI/oled_gfx.o \
@@ -24,8 +24,8 @@ OBJS += \
 
 C_DEPS += \
 ./Components/HMI/fonts.d \
+./Components/HMI/hmi.d \
 ./Components/HMI/leds.d \
-./Components/HMI/oled.d \
 ./Components/HMI/oled_ascii.d \
 ./Components/HMI/oled_driver.d \
 ./Components/HMI/oled_gfx.d \
@@ -39,7 +39,7 @@ Components/HMI/%.o: ../Components/HMI/%.c Components/HMI/subdir.mk
 clean: clean-Components-2f-HMI
 
 clean-Components-2f-HMI:
-	-$(RM) ./Components/HMI/fonts.d ./Components/HMI/fonts.o ./Components/HMI/leds.d ./Components/HMI/leds.o ./Components/HMI/oled.d ./Components/HMI/oled.o ./Components/HMI/oled_ascii.d ./Components/HMI/oled_ascii.o ./Components/HMI/oled_driver.d ./Components/HMI/oled_driver.o ./Components/HMI/oled_gfx.d ./Components/HMI/oled_gfx.o ./Components/HMI/ssd1351.d ./Components/HMI/ssd1351.o
+	-$(RM) ./Components/HMI/fonts.d ./Components/HMI/fonts.o ./Components/HMI/hmi.d ./Components/HMI/hmi.o ./Components/HMI/leds.d ./Components/HMI/leds.o ./Components/HMI/oled_ascii.d ./Components/HMI/oled_ascii.o ./Components/HMI/oled_driver.d ./Components/HMI/oled_driver.o ./Components/HMI/oled_gfx.d ./Components/HMI/oled_gfx.o ./Components/HMI/ssd1351.d ./Components/HMI/ssd1351.o
 
 .PHONY: clean-Components-2f-HMI
 

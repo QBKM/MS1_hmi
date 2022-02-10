@@ -14,7 +14,7 @@
    include
 -- ------------------------------------------------------------- */
 #include "leds.h"
-#include "oled.h"
+#include "hmi.h"
 #include "freeRtos.h"
 #include "task.h"
 #include "gpio.h"
@@ -68,25 +68,25 @@ static void handler_oled(void* parameters)
  * ************************************************************* **/
 static void handler_btn(void* parameters)
 {
-    ENUM_BTN_LIST_t btn;
+    ENUM_HMI_BTN_t btn;
 
     if(xQueueReceive(QueueHandle_btn, &btn, portMAX_DELAY))
     {
         switch (btn)
         {
-        case E_LIST_BTN1:
+        case E_HMI_BTN1:
             /* TODO */
             break;
 
-        case E_LIST_BTN2:
+        case E_HMI_BTN2:
             /* TODO */
             break;
 
-        case E_LIST_BTN3:
+        case E_HMI_BTN3:
             /* TODO */
             break;
 
-        case E_LIST_BTN4:
+        case E_HMI_BTN4:
             /* TODO */
             break;                                    
         

@@ -1,6 +1,6 @@
 "./Components/HMI/fonts.o"
+"./Components/HMI/hmi.o"
 "./Components/HMI/leds.o"
-"./Components/HMI/oled.o"
 "./Components/HMI/oled_ascii.o"
 "./Components/HMI/oled_driver.o"
 "./Components/HMI/oled_gfx.o"

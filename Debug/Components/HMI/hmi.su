@@ -1,0 +1,4 @@
+hmi.c:59:13:handler_oled	16	static
+hmi.c:69:13:handler_btn	24	static
+hmi.c:106:6:API_HMI_START	32	static,ignoring_inline_asm
+hmi.c:124:6:API_HMI_CALLBACK	16	static

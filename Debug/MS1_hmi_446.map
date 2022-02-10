@@ -22,7 +22,7 @@ c:/st/stm32cubeide_1.8.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.externalt
 Allocating common symbols
 Common symbol       size              file
 
-QueueHandle_btn     0x4               ./Components/HMI/oled.o
+QueueHandle_btn     0x4               ./Components/HMI/hmi.o
 QueueHandle_leds_mntr
                     0x4               ./Components/HMI/leds.o
 color_fill_byte     0x2               ./Components/HMI/oled_driver.o
@@ -34,9 +34,9 @@ QueueHandle_leds_cmd
                     0x4               ./Components/HMI/leds.o
 htim11              0x48              ./Core/Src/stm32f4xx_hal_timebase_tim.o
 TaskHandle_leds     0x4               ./Components/HMI/leds.o
-TaskHandle_btn      0x4               ./Components/HMI/oled.o
+TaskHandle_btn      0x4               ./Components/HMI/hmi.o
 hspi1               0x58              ./Core/Src/spi.o
-TaskHandle_oled     0x4               ./Components/HMI/oled.o
+TaskHandle_oled     0x4               ./Components/HMI/hmi.o
 huart2              0x44              ./Core/Src/usart.o
 
 Discarded input sections
@@ -91,6 +91,135 @@ Discarded input sections
  .comment       0x0000000000000000       0x54 ./Components/HMI/fonts.o
  .ARM.attributes
                 0x0000000000000000       0x39 ./Components/HMI/fonts.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .group         0x0000000000000000        0xc ./Components/HMI/hmi.o
+ .text          0x0000000000000000        0x0 ./Components/HMI/hmi.o
+ .data          0x0000000000000000        0x0 ./Components/HMI/hmi.o
+ .bss           0x0000000000000000        0x0 ./Components/HMI/hmi.o
+ .text.handler_oled
+                0x0000000000000000       0x14 ./Components/HMI/hmi.o
+ .text.handler_btn
+                0x0000000000000000       0x50 ./Components/HMI/hmi.o
+ .rodata        0x0000000000000000       0x15 ./Components/HMI/hmi.o
+ .text.API_HMI_START
+                0x0000000000000000       0x8c ./Components/HMI/hmi.o
+ .text.API_HMI_CALLBACK
+                0x0000000000000000       0x24 ./Components/HMI/hmi.o
+ .debug_info    0x0000000000000000      0x32b ./Components/HMI/hmi.o
+ .debug_abbrev  0x0000000000000000      0x1ab ./Components/HMI/hmi.o
+ .debug_aranges
+                0x0000000000000000       0x38 ./Components/HMI/hmi.o
+ .debug_ranges  0x0000000000000000       0x28 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x292 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0xaa8 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0x22 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0x8e ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0x51 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x103 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0x6a ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x1df ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0x22 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x174 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x112 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x15a ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0xea ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0x1c ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0x26 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x527 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0xb5 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x120 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x2a1 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0x2e ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0x28 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0x1c ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0x22 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0xdf ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000     0x102d ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x11f ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000    0x16749 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0x6d ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000     0x3666 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0x5c ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0xc90 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x9fe ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x116 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x1a0 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0xa5 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x16d ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x287 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0x5f ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x236 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x132 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x29c ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0x2e ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x11a ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0xe8 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0x89 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x225 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x8d1 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0x4d ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x295 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x126 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000      0x160 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0x80 ./Components/HMI/hmi.o
+ .debug_macro   0x0000000000000000       0x1c ./Components/HMI/hmi.o
+ .debug_line    0x0000000000000000      0x999 ./Components/HMI/hmi.o
+ .debug_str     0x0000000000000000    0xcfff1 ./Components/HMI/hmi.o
+ .comment       0x0000000000000000       0x54 ./Components/HMI/hmi.o
+ .debug_frame   0x0000000000000000       0xa4 ./Components/HMI/hmi.o
+ .ARM.attributes
+                0x0000000000000000       0x34 ./Components/HMI/hmi.o
+ COMMON         0x0000000000000000        0xc ./Components/HMI/hmi.o
  .group         0x0000000000000000        0xc ./Components/HMI/leds.o
  .group         0x0000000000000000        0xc ./Components/HMI/leds.o
  .group         0x0000000000000000        0xc ./Components/HMI/leds.o
@@ -155,135 +284,51 @@ Discarded input sections
  .debug_macro   0x0000000000000000      0x103 ./Components/HMI/leds.o
  .debug_macro   0x0000000000000000       0x6a ./Components/HMI/leds.o
  .debug_macro   0x0000000000000000      0x1df ./Components/HMI/leds.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .group         0x0000000000000000        0xc ./Components/HMI/oled.o
- .text          0x0000000000000000        0x0 ./Components/HMI/oled.o
- .data          0x0000000000000000        0x0 ./Components/HMI/oled.o
- .bss           0x0000000000000000        0x0 ./Components/HMI/oled.o
- .text.handler_oled
-                0x0000000000000000       0x14 ./Components/HMI/oled.o
- .text.handler_btn
-                0x0000000000000000       0x50 ./Components/HMI/oled.o
- .rodata        0x0000000000000000       0x15 ./Components/HMI/oled.o
- .text.API_OLED_START
-                0x0000000000000000       0x8c ./Components/HMI/oled.o
- .text.API_OLED_CALLBACK
-                0x0000000000000000       0x24 ./Components/HMI/oled.o
- .debug_info    0x0000000000000000      0x32b ./Components/HMI/oled.o
- .debug_abbrev  0x0000000000000000      0x1ab ./Components/HMI/oled.o
- .debug_aranges
-                0x0000000000000000       0x38 ./Components/HMI/oled.o
- .debug_ranges  0x0000000000000000       0x28 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x292 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0xaa8 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0x22 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0x8e ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0x51 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x103 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0x6a ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x1df ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0x22 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x174 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x112 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x15a ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0xea ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0x1c ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0x26 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x527 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0xb5 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x120 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x2a1 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0x2e ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0x28 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0x1c ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0x22 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0xdf ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000     0x102d ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x11f ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000    0x16749 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0x6d ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000     0x3666 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0x5c ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0xc90 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x9fe ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x116 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x1a0 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0xa5 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x16d ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x287 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0x5f ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x236 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x132 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x29c ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0x2e ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x11a ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0xe8 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0x89 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x225 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x8d1 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0x4d ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x295 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x126 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000      0x160 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0x80 ./Components/HMI/oled.o
- .debug_macro   0x0000000000000000       0x1c ./Components/HMI/oled.o
- .debug_line    0x0000000000000000      0x99b ./Components/HMI/oled.o
- .debug_str     0x0000000000000000    0xcfff9 ./Components/HMI/oled.o
- .comment       0x0000000000000000       0x54 ./Components/HMI/oled.o
- .debug_frame   0x0000000000000000       0xa4 ./Components/HMI/oled.o
- .ARM.attributes
-                0x0000000000000000       0x34 ./Components/HMI/oled.o
- COMMON         0x0000000000000000        0xc ./Components/HMI/oled.o
+ .debug_macro   0x0000000000000000       0x22 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0x174 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0x112 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0x15a ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000       0xea ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000       0x1c ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000       0x26 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0x527 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000       0xb5 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0x120 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0x2a1 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000       0x2e ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000       0x28 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000       0x1c ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000       0x22 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000       0xdf ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000     0x102d ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0x11f ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000    0x16749 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000       0x6d ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000     0x3666 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000       0x5c ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0xc90 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0x9fe ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0x116 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0x1a0 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000       0xa5 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0x16d ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0x287 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000       0x5f ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0x236 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0x132 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0x29c ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000       0x2e ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0x11a ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000       0xe8 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000       0x89 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0x225 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0x8d1 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000       0x4d ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0x295 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0x126 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000      0x160 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000       0x80 ./Components/HMI/leds.o
+ .debug_macro   0x0000000000000000       0x1c ./Components/HMI/leds.o
  .group         0x0000000000000000        0xc ./Components/HMI/oled_ascii.o
  .group         0x0000000000000000        0xc ./Components/HMI/oled_ascii.o
  .group         0x0000000000000000        0xc ./Components/HMI/oled_ascii.o
@@ -376,11 +421,11 @@ Discarded input sections
  .text.Set_FillColor
                 0x0000000000000000       0x30 ./Components/HMI/oled_driver.o
  .text.Write_Command
-                0x0000000000000000       0x2c ./Components/HMI/oled_driver.o
+                0x0000000000000000       0x58 ./Components/HMI/oled_driver.o
  .text.Write_Data
-                0x0000000000000000       0x2c ./Components/HMI/oled_driver.o
+                0x0000000000000000       0x58 ./Components/HMI/oled_driver.o
  .text.Write_Data_ptr
-                0x0000000000000000       0x2c ./Components/HMI/oled_driver.o
+                0x0000000000000000       0x58 ./Components/HMI/oled_driver.o
  .text.RAM_Address
                 0x0000000000000000       0x2c ./Components/HMI/oled_driver.o
  .text.Clear_Screen
@@ -406,12 +451,12 @@ Discarded input sections
                 0x0000000000000000       0xf4 ./Components/HMI/oled_driver.o
  .text.Display_bmp
                 0x0000000000000000       0x54 ./Components/HMI/oled_driver.o
- .debug_info    0x0000000000000000      0xc12 ./Components/HMI/oled_driver.o
+ .debug_info    0x0000000000000000      0xc39 ./Components/HMI/oled_driver.o
  .debug_abbrev  0x0000000000000000      0x276 ./Components/HMI/oled_driver.o
  .debug_aranges
                 0x0000000000000000       0xa8 ./Components/HMI/oled_driver.o
  .debug_ranges  0x0000000000000000       0x98 ./Components/HMI/oled_driver.o
- .debug_macro   0x0000000000000000      0x21b ./Components/HMI/oled_driver.o
+ .debug_macro   0x0000000000000000      0x223 ./Components/HMI/oled_driver.o
  .debug_macro   0x0000000000000000      0xaa8 ./Components/HMI/oled_driver.o
  .debug_macro   0x0000000000000000      0x2a1 ./Components/HMI/oled_driver.o
  .debug_macro   0x0000000000000000       0x2e ./Components/HMI/oled_driver.o
@@ -455,8 +500,8 @@ Discarded input sections
  .debug_macro   0x0000000000000000      0x166 ./Components/HMI/oled_driver.o
  .debug_macro   0x0000000000000000       0x22 ./Components/HMI/oled_driver.o
  .debug_macro   0x0000000000000000      0x112 ./Components/HMI/oled_driver.o
- .debug_line    0x0000000000000000      0xb96 ./Components/HMI/oled_driver.o
- .debug_str     0x0000000000000000    0xcb5b7 ./Components/HMI/oled_driver.o
+ .debug_line    0x0000000000000000      0xbd6 ./Components/HMI/oled_driver.o
+ .debug_str     0x0000000000000000    0xcb61e ./Components/HMI/oled_driver.o
  .comment       0x0000000000000000       0x54 ./Components/HMI/oled_driver.o
  .debug_frame   0x0000000000000000      0x290 ./Components/HMI/oled_driver.o
  .ARM.attributes
@@ -4932,8 +4977,8 @@ LOAD c:/st/stm32cubeide_1.8.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.exte
 LOAD c:/st/stm32cubeide_1.8.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.win32_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/thumb/v7e-m+fp/hard/crtbegin.o
 LOAD c:/st/stm32cubeide_1.8.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.win32_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/crt0.o
 LOAD ./Components/HMI/fonts.o
+LOAD ./Components/HMI/hmi.o
 LOAD ./Components/HMI/leds.o
-LOAD ./Components/HMI/oled.o
 LOAD ./Components/HMI/oled_ascii.o
 LOAD ./Components/HMI/oled_driver.o
 LOAD ./Components/HMI/oled_gfx.o
@@ -5905,160 +5950,115 @@ LOAD c:/st/stm32cubeide_1.8.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.exte
  .debug_ranges  0x0000000000001160       0x80 ./ThirdParty/FreeRTOS/portable/GCC/ARM_CM4F/port.o
  .debug_ranges  0x00000000000011e0       0x48 ./ThirdParty/FreeRTOS/portable/MemMang/heap_4.o
 
-.debug_macro    0x0000000000000000    0x22dfe
+.debug_macro    0x0000000000000000     0x3609
  .debug_macro   0x0000000000000000      0x288 ./Components/HMI/leds.o
- .debug_macro   0x0000000000000288       0x22 ./Components/HMI/leds.o
- .debug_macro   0x00000000000002aa      0x174 ./Components/HMI/leds.o
- .debug_macro   0x000000000000041e      0x112 ./Components/HMI/leds.o
- .debug_macro   0x0000000000000530      0x15a ./Components/HMI/leds.o
- .debug_macro   0x000000000000068a       0xea ./Components/HMI/leds.o
- .debug_macro   0x0000000000000774       0x1c ./Components/HMI/leds.o
- .debug_macro   0x0000000000000790       0x26 ./Components/HMI/leds.o
- .debug_macro   0x00000000000007b6      0x527 ./Components/HMI/leds.o
- .debug_macro   0x0000000000000cdd       0xb5 ./Components/HMI/leds.o
- .debug_macro   0x0000000000000d92      0x120 ./Components/HMI/leds.o
- .debug_macro   0x0000000000000eb2      0x2a1 ./Components/HMI/leds.o
- .debug_macro   0x0000000000001153       0x2e ./Components/HMI/leds.o
- .debug_macro   0x0000000000001181       0x28 ./Components/HMI/leds.o
- .debug_macro   0x00000000000011a9       0x1c ./Components/HMI/leds.o
- .debug_macro   0x00000000000011c5       0x22 ./Components/HMI/leds.o
- .debug_macro   0x00000000000011e7       0xdf ./Components/HMI/leds.o
- .debug_macro   0x00000000000012c6     0x102d ./Components/HMI/leds.o
- .debug_macro   0x00000000000022f3      0x11f ./Components/HMI/leds.o
- .debug_macro   0x0000000000002412    0x16749 ./Components/HMI/leds.o
- .debug_macro   0x0000000000018b5b       0x6d ./Components/HMI/leds.o
- .debug_macro   0x0000000000018bc8     0x3666 ./Components/HMI/leds.o
- .debug_macro   0x000000000001c22e       0x5c ./Components/HMI/leds.o
- .debug_macro   0x000000000001c28a      0xc90 ./Components/HMI/leds.o
- .debug_macro   0x000000000001cf1a      0x9fe ./Components/HMI/leds.o
- .debug_macro   0x000000000001d918      0x116 ./Components/HMI/leds.o
- .debug_macro   0x000000000001da2e      0x1a0 ./Components/HMI/leds.o
- .debug_macro   0x000000000001dbce       0xa5 ./Components/HMI/leds.o
- .debug_macro   0x000000000001dc73      0x16d ./Components/HMI/leds.o
- .debug_macro   0x000000000001dde0      0x287 ./Components/HMI/leds.o
- .debug_macro   0x000000000001e067       0x5f ./Components/HMI/leds.o
- .debug_macro   0x000000000001e0c6      0x236 ./Components/HMI/leds.o
- .debug_macro   0x000000000001e2fc      0x132 ./Components/HMI/leds.o
- .debug_macro   0x000000000001e42e      0x29c ./Components/HMI/leds.o
- .debug_macro   0x000000000001e6ca       0x2e ./Components/HMI/leds.o
- .debug_macro   0x000000000001e6f8      0x11a ./Components/HMI/leds.o
- .debug_macro   0x000000000001e812       0xe8 ./Components/HMI/leds.o
- .debug_macro   0x000000000001e8fa       0x89 ./Components/HMI/leds.o
- .debug_macro   0x000000000001e983      0x225 ./Components/HMI/leds.o
- .debug_macro   0x000000000001eba8      0x8d1 ./Components/HMI/leds.o
- .debug_macro   0x000000000001f479       0x4d ./Components/HMI/leds.o
- .debug_macro   0x000000000001f4c6      0x295 ./Components/HMI/leds.o
- .debug_macro   0x000000000001f75b      0x126 ./Components/HMI/leds.o
- .debug_macro   0x000000000001f881      0x160 ./Components/HMI/leds.o
- .debug_macro   0x000000000001f9e1       0x80 ./Components/HMI/leds.o
- .debug_macro   0x000000000001fa61       0x1c ./Components/HMI/leds.o
- .debug_macro   0x000000000001fa7d      0x1f1 ./Core/Src/gpio.o
- .debug_macro   0x000000000001fc6e      0x28e ./Core/Src/main.o
- .debug_macro   0x000000000001fefc      0x112 ./Core/Src/main.o
- .debug_macro   0x000000000002000e      0x527 ./Core/Src/main.o
- .debug_macro   0x0000000000020535      0x1f1 ./Core/Src/spi.o
- .debug_macro   0x0000000000020726      0x1e7 ./Core/Src/stm32f4xx_hal_msp.o
- .debug_macro   0x000000000002090d      0x1d8 ./Core/Src/stm32f4xx_hal_timebase_tim.o
- .debug_macro   0x0000000000020ae5      0x1f1 ./Core/Src/stm32f4xx_it.o
- .debug_macro   0x0000000000020cd6      0x1d8 ./Core/Src/system_stm32f4xx.o
- .debug_macro   0x0000000000020eae      0x1f1 ./Core/Src/usart.o
- .debug_macro   0x000000000002109f      0x238 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
- .debug_macro   0x00000000000212d7      0x1d8 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
- .debug_macro   0x00000000000214af      0x1de ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
- .debug_macro   0x000000000002168d      0x1fc ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
- .debug_macro   0x0000000000021889      0x1d8 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o
- .debug_macro   0x0000000000021a61      0x1e7 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
- .debug_macro   0x0000000000021c48      0x1d9 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.o
- .debug_macro   0x0000000000021e21      0x1d8 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.o
- .debug_macro   0x0000000000021ff9      0x1d9 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
- .debug_macro   0x00000000000221d2      0x193 ./ThirdParty/FreeRTOS/list.o
- .debug_macro   0x0000000000022365      0x21c ./ThirdParty/FreeRTOS/queue.o
- .debug_macro   0x0000000000022581       0x16 ./ThirdParty/FreeRTOS/queue.o
- .debug_macro   0x0000000000022597       0x20 ./ThirdParty/FreeRTOS/queue.o
- .debug_macro   0x00000000000225b7      0x280 ./ThirdParty/FreeRTOS/tasks.o
- .debug_macro   0x0000000000022837       0x10 ./ThirdParty/FreeRTOS/tasks.o
- .debug_macro   0x0000000000022847      0x1dc ./ThirdParty/FreeRTOS/timers.o
- .debug_macro   0x0000000000022a23       0x97 ./ThirdParty/FreeRTOS/timers.o
- .debug_macro   0x0000000000022aba      0x196 ./ThirdParty/FreeRTOS/portable/GCC/ARM_CM4F/port.o
- .debug_macro   0x0000000000022c50      0x1ae ./ThirdParty/FreeRTOS/portable/MemMang/heap_4.o
+ .debug_macro   0x0000000000000288      0x1f1 ./Core/Src/gpio.o
+ .debug_macro   0x0000000000000479      0x28e ./Core/Src/main.o
+ .debug_macro   0x0000000000000707      0x112 ./Core/Src/main.o
+ .debug_macro   0x0000000000000819      0x527 ./Core/Src/main.o
+ .debug_macro   0x0000000000000d40      0x1f1 ./Core/Src/spi.o
+ .debug_macro   0x0000000000000f31      0x1e7 ./Core/Src/stm32f4xx_hal_msp.o
+ .debug_macro   0x0000000000001118      0x1d8 ./Core/Src/stm32f4xx_hal_timebase_tim.o
+ .debug_macro   0x00000000000012f0      0x1f1 ./Core/Src/stm32f4xx_it.o
+ .debug_macro   0x00000000000014e1      0x1d8 ./Core/Src/system_stm32f4xx.o
+ .debug_macro   0x00000000000016b9      0x1f1 ./Core/Src/usart.o
+ .debug_macro   0x00000000000018aa      0x238 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+ .debug_macro   0x0000000000001ae2      0x1d8 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
+ .debug_macro   0x0000000000001cba      0x1de ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
+ .debug_macro   0x0000000000001e98      0x1fc ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
+ .debug_macro   0x0000000000002094      0x1d8 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o
+ .debug_macro   0x000000000000226c      0x1e7 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
+ .debug_macro   0x0000000000002453      0x1d9 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.o
+ .debug_macro   0x000000000000262c      0x1d8 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.o
+ .debug_macro   0x0000000000002804      0x1d9 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
+ .debug_macro   0x00000000000029dd      0x193 ./ThirdParty/FreeRTOS/list.o
+ .debug_macro   0x0000000000002b70      0x21c ./ThirdParty/FreeRTOS/queue.o
+ .debug_macro   0x0000000000002d8c       0x16 ./ThirdParty/FreeRTOS/queue.o
+ .debug_macro   0x0000000000002da2       0x20 ./ThirdParty/FreeRTOS/queue.o
+ .debug_macro   0x0000000000002dc2      0x280 ./ThirdParty/FreeRTOS/tasks.o
+ .debug_macro   0x0000000000003042       0x10 ./ThirdParty/FreeRTOS/tasks.o
+ .debug_macro   0x0000000000003052      0x1dc ./ThirdParty/FreeRTOS/timers.o
+ .debug_macro   0x000000000000322e       0x97 ./ThirdParty/FreeRTOS/timers.o
+ .debug_macro   0x00000000000032c5      0x196 ./ThirdParty/FreeRTOS/portable/GCC/ARM_CM4F/port.o
+ .debug_macro   0x000000000000345b      0x1ae ./ThirdParty/FreeRTOS/portable/MemMang/heap_4.o
 
-.debug_line     0x0000000000000000    0x179dc
+.debug_line     0x0000000000000000    0x179db
  .debug_line    0x0000000000000000      0xa08 ./Components/HMI/leds.o
  .debug_line    0x0000000000000a08      0x722 ./Core/Src/gpio.o
- .debug_line    0x000000000000112a      0x97f ./Core/Src/main.o
- .debug_line    0x0000000000001aa9      0x74f ./Core/Src/spi.o
- .debug_line    0x00000000000021f8      0x6dd ./Core/Src/stm32f4xx_hal_msp.o
- .debug_line    0x00000000000028d5      0x73a ./Core/Src/stm32f4xx_hal_timebase_tim.o
- .debug_line    0x000000000000300f      0x77a ./Core/Src/stm32f4xx_it.o
- .debug_line    0x0000000000003789      0x75f ./Core/Src/system_stm32f4xx.o
- .debug_line    0x0000000000003ee8      0x747 ./Core/Src/usart.o
- .debug_line    0x000000000000462f       0x88 ./Core/Startup/startup_stm32f446retx.o
- .debug_line    0x00000000000046b7      0x9c5 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
- .debug_line    0x000000000000507c      0xc74 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
- .debug_line    0x0000000000005cf0      0xb27 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
- .debug_line    0x0000000000006817      0xd4d ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
- .debug_line    0x0000000000007564     0x13d3 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o
- .debug_line    0x0000000000008937     0x1c4d ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
- .debug_line    0x000000000000a584     0x36b9 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.o
- .debug_line    0x000000000000dc3d     0x19c2 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.o
- .debug_line    0x000000000000f5ff     0x2a4c ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
- .debug_line    0x000000000001204b      0x74b ./ThirdParty/FreeRTOS/list.o
- .debug_line    0x0000000000012796     0x15f4 ./ThirdParty/FreeRTOS/queue.o
- .debug_line    0x0000000000013d8a     0x1d01 ./ThirdParty/FreeRTOS/tasks.o
- .debug_line    0x0000000000015a8b      0xca7 ./ThirdParty/FreeRTOS/timers.o
- .debug_line    0x0000000000016732      0x914 ./ThirdParty/FreeRTOS/portable/GCC/ARM_CM4F/port.o
- .debug_line    0x0000000000017046      0x996 ./ThirdParty/FreeRTOS/portable/MemMang/heap_4.o
+ .debug_line    0x000000000000112a      0x97e ./Core/Src/main.o
+ .debug_line    0x0000000000001aa8      0x74f ./Core/Src/spi.o
+ .debug_line    0x00000000000021f7      0x6dd ./Core/Src/stm32f4xx_hal_msp.o
+ .debug_line    0x00000000000028d4      0x73a ./Core/Src/stm32f4xx_hal_timebase_tim.o
+ .debug_line    0x000000000000300e      0x77a ./Core/Src/stm32f4xx_it.o
+ .debug_line    0x0000000000003788      0x75f ./Core/Src/system_stm32f4xx.o
+ .debug_line    0x0000000000003ee7      0x747 ./Core/Src/usart.o
+ .debug_line    0x000000000000462e       0x88 ./Core/Startup/startup_stm32f446retx.o
+ .debug_line    0x00000000000046b6      0x9c5 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+ .debug_line    0x000000000000507b      0xc74 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
+ .debug_line    0x0000000000005cef      0xb27 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
+ .debug_line    0x0000000000006816      0xd4d ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
+ .debug_line    0x0000000000007563     0x13d3 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o
+ .debug_line    0x0000000000008936     0x1c4d ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
+ .debug_line    0x000000000000a583     0x36b9 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.o
+ .debug_line    0x000000000000dc3c     0x19c2 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.o
+ .debug_line    0x000000000000f5fe     0x2a4c ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
+ .debug_line    0x000000000001204a      0x74b ./ThirdParty/FreeRTOS/list.o
+ .debug_line    0x0000000000012795     0x15f4 ./ThirdParty/FreeRTOS/queue.o
+ .debug_line    0x0000000000013d89     0x1d01 ./ThirdParty/FreeRTOS/tasks.o
+ .debug_line    0x0000000000015a8a      0xca7 ./ThirdParty/FreeRTOS/timers.o
+ .debug_line    0x0000000000016731      0x914 ./ThirdParty/FreeRTOS/portable/GCC/ARM_CM4F/port.o
+ .debug_line    0x0000000000017045      0x996 ./ThirdParty/FreeRTOS/portable/MemMang/heap_4.o
 
-.debug_str      0x0000000000000000    0xda9be
+.debug_str      0x0000000000000000    0xda9ba
  .debug_str     0x0000000000000000    0xcfddc ./Components/HMI/leds.o
                                       0xd00c2 (size before relaxing)
  .debug_str     0x00000000000cfddc      0x179 ./Core/Src/gpio.o
                                       0xcabdc (size before relaxing)
- .debug_str     0x00000000000cff55      0x9f2 ./Core/Src/main.o
-                                      0xd030f (size before relaxing)
- .debug_str     0x00000000000d0947       0x4b ./Core/Src/spi.o
+ .debug_str     0x00000000000cff55      0x9ee ./Core/Src/main.o
+                                      0xd030b (size before relaxing)
+ .debug_str     0x00000000000d0943       0x4b ./Core/Src/spi.o
                                       0xcb039 (size before relaxing)
- .debug_str     0x00000000000d0992       0x2c ./Core/Src/stm32f4xx_hal_msp.o
+ .debug_str     0x00000000000d098e       0x2c ./Core/Src/stm32f4xx_hal_msp.o
                                       0xcab3f (size before relaxing)
- .debug_str     0x00000000000d09be      0x5ad ./Core/Src/stm32f4xx_hal_timebase_tim.o
+ .debug_str     0x00000000000d09ba      0x5ad ./Core/Src/stm32f4xx_hal_timebase_tim.o
                                       0xcb13d (size before relaxing)
- .debug_str     0x00000000000d0f6b       0xb0 ./Core/Src/stm32f4xx_it.o
+ .debug_str     0x00000000000d0f67       0xb0 ./Core/Src/stm32f4xx_it.o
                                       0xcafc3 (size before relaxing)
- .debug_str     0x00000000000d101b       0xaf ./Core/Src/system_stm32f4xx.o
+ .debug_str     0x00000000000d1017       0xaf ./Core/Src/system_stm32f4xx.o
                                       0xca66e (size before relaxing)
- .debug_str     0x00000000000d10ca       0x57 ./Core/Src/usart.o
+ .debug_str     0x00000000000d10c6       0x57 ./Core/Src/usart.o
                                       0xcb041 (size before relaxing)
- .debug_str     0x00000000000d1121       0x36 ./Core/Startup/startup_stm32f446retx.o
+ .debug_str     0x00000000000d111d       0x36 ./Core/Startup/startup_stm32f446retx.o
                                          0x7b (size before relaxing)
- .debug_str     0x00000000000d1157      0x538 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+ .debug_str     0x00000000000d1153      0x538 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
                                       0xcb191 (size before relaxing)
- .debug_str     0x00000000000d168f      0x392 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
+ .debug_str     0x00000000000d168b      0x392 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
                                       0xcaf5b (size before relaxing)
- .debug_str     0x00000000000d1a21      0x13f ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
+ .debug_str     0x00000000000d1a1d      0x13f ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
                                       0xca815 (size before relaxing)
- .debug_str     0x00000000000d1b60      0x24f ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
+ .debug_str     0x00000000000d1b5c      0x24f ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
                                       0xcaa75 (size before relaxing)
- .debug_str     0x00000000000d1daf      0x324 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o
+ .debug_str     0x00000000000d1dab      0x324 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o
                                       0xcaad2 (size before relaxing)
- .debug_str     0x00000000000d20d3      0x57f ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
+ .debug_str     0x00000000000d20cf      0x57f ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
                                       0xcaeed (size before relaxing)
- .debug_str     0x00000000000d2652      0xe47 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.o
+ .debug_str     0x00000000000d264e      0xe47 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.o
                                       0xcb978 (size before relaxing)
- .debug_str     0x00000000000d3499      0x538 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.o
+ .debug_str     0x00000000000d3495      0x538 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.o
                                       0xcb129 (size before relaxing)
- .debug_str     0x00000000000d39d1      0x5fb ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
+ .debug_str     0x00000000000d39cd      0x5fb ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
                                       0xcafd1 (size before relaxing)
- .debug_str     0x00000000000d3fcc     0x3385 ./ThirdParty/FreeRTOS/list.o
+ .debug_str     0x00000000000d3fc8     0x3385 ./ThirdParty/FreeRTOS/list.o
                                        0xaec2 (size before relaxing)
- .debug_str     0x00000000000d7351      0x91f ./ThirdParty/FreeRTOS/queue.o
+ .debug_str     0x00000000000d734d      0x91f ./ThirdParty/FreeRTOS/queue.o
                                        0xd18a (size before relaxing)
- .debug_str     0x00000000000d7c70     0x1d08 ./ThirdParty/FreeRTOS/tasks.o
+ .debug_str     0x00000000000d7c6c     0x1d08 ./ThirdParty/FreeRTOS/tasks.o
                                        0xdfda (size before relaxing)
- .debug_str     0x00000000000d9978      0x51d ./ThirdParty/FreeRTOS/timers.o
+ .debug_str     0x00000000000d9974      0x51d ./ThirdParty/FreeRTOS/timers.o
                                        0xd56a (size before relaxing)
- .debug_str     0x00000000000d9e95      0x802 ./ThirdParty/FreeRTOS/portable/GCC/ARM_CM4F/port.o
+ .debug_str     0x00000000000d9e91      0x802 ./ThirdParty/FreeRTOS/portable/GCC/ARM_CM4F/port.o
                                        0x95ae (size before relaxing)
- .debug_str     0x00000000000da697      0x327 ./ThirdParty/FreeRTOS/portable/MemMang/heap_4.o
+ .debug_str     0x00000000000da693      0x327 ./ThirdParty/FreeRTOS/portable/MemMang/heap_4.o
                                        0xc33c (size before relaxing)
 
 .comment        0x0000000000000000       0x53
