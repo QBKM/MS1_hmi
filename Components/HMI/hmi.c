@@ -35,42 +35,7 @@
 #define ID_OFFSET       1
 #define PAYLOAD_OFFSET  4
 
-#define  OLED_DEFAULT_PERIOD_TASK 100
-
-#define APP_PHASE_WAIT          "wait"
-#define APP_PHASE_ASCEND        "ascend"
-#define APP_PHASE_DESCEND       "descend"
-#define APP_AEROC_RELEASED      "released"
-#define APP_WINDOW_IN           "in"
-#define APP_WINDOW_OUT          "out"
-#define APP_RECOV_APOGEE_OK     "done"
-
-#define MNTR_BAT_SEQ_OK         "ok"
-#define MNTR_BAT_SEQ_KO         "ko"
-#define MNTR_BAT_MOTOR1_OK      "ok"
-#define MNTR_BAT_MOTOR1_KO      "ko"
-#define MNTR_BAT_MOTOR2_OK      "ok"
-#define MNTR_BAT_MOTOR2_KO      "ko"
-
-#define RECOV_LAST_CMD_NONE     "none"
-#define RECOV_LAST_CMD_STOP     "stop"
-#define RECOV_LAST_CMD_OPEN     "open"
-#define RECOV_LAST_CMD_CLOSE    "close"
-#define RECOV_STATUS_NONE       "none"
-#define RECOV_STATUS_STOPPED    "stopped"
-#define RECOV_STATUS_RUNNING    "running"
-#define RECOV_STATUS_OPENED     "opened"
-#define RECOV_STATUS_CLOSED     "closed"
-
-#define PAYLOAD_LAST_CMD_NONE   "none"
-#define PAYLOAD_LAST_CMD_STOP   "stop"
-#define PAYLOAD_LAST_CMD_OPEN   "open"
-#define PAYLOAD_LAST_CMD_CLOSE  "close"
-#define PAYLOAD_STATUS_NONE     "none"
-#define PAYLOAD_STATUS_STOPPED  "stopped"
-#define PAYLOAD_STATUS_RUNNING  "running"
-#define PAYLOAD_STATUS_OPENED   "opened"
-#define PAYLOAD_STATUS_CLOSED   "closed"
+#define OLED_DEFAULT_PERIOD_TASK 100
 
 #define OLED_MENU_LIST_0        
 #define OLED_MENU_LIST_1        OLED_GUI_MONITORING
@@ -134,8 +99,10 @@ typedef struct
     uint8_t SENS_IMU_GY[PAYLOAD_SIZE];
     uint8_t SENS_IMU_GZ[PAYLOAD_SIZE];
     uint8_t SENS_IMU_TEMP[PAYLOAD_SIZE];
+    uint8_t SENS_IMU_ERROR[PAYLOAD_SIZE];
     uint8_t SENS_BARO_PRESS[PAYLOAD_SIZE];
     uint8_t SENS_BARO_TEMP[PAYLOAD_SIZE];
+    uint8_t SENS_BARO_ERROR[PAYLOAD_SIZE];
 
     uint8_t MNTR_BAT_SEQ[PAYLOAD_SIZE];
     uint8_t MNTR_BAT_MOTOR1[PAYLOAD_SIZE];
@@ -183,20 +150,26 @@ static void OLED_GUI_DATA(void);
 static void id_parser_app_phase(uint8_t* data);
 static void id_parser_app_window(uint8_t* data);
 static void id_parser_app_aeroc(uint8_t* data);
+
 static void id_parser_sens_imu_ax(uint8_t* data);
 static void id_parser_sens_imu_ay(uint8_t* data);
 static void id_parser_sens_imu_az(uint8_t* data);
 static void id_parser_sens_imu_gx(uint8_t* data);
 static void id_parser_sens_imu_gy(uint8_t* data);
 static void id_parser_sens_imu_gz(uint8_t* data);
+static void id_parser_sens_imu_error(uint8_t* data);
 static void id_parser_sens_imu_temp(uint8_t* data);
 static void id_parser_sens_baro_press(uint8_t* data);
 static void id_parser_sens_baro_temp(uint8_t* data);
+static void id_parser_sens_baro_error(uint8_t* data);
+
 static void id_parser_mntr_bat_seq(uint8_t* data);
 static void id_parser_mntr_bat_motor1(uint8_t* data);
 static void id_parser_mntr_bat_motor2(uint8_t* data);
+
 static void id_parser_recov_last_cmd(uint8_t* data);
 static void id_parser_recov_status(uint8_t* data);
+
 static void id_parser_payload_last_cmd(uint8_t* data);
 static void id_parser_payload_status(uint8_t* data);
 
@@ -223,26 +196,26 @@ static void handler_oled(void* parameters)
         {
             switch (button)
             {
-            case E_HMI_OLED_BTN_UP:      oled.line_pointer = (oled.line_pointer >= oled.max_pointer) ? oled.max_pointer : oled.line_pointer++; break;
-            case E_HMI_OLED_BTN_DOWN:    oled.line_pointer = (oled.line_pointer <= oled.min_pointer) ? oled.min_pointer : oled.line_pointer--; break;
-            case E_HMI_OLED_BTN_OK:
-                switch (oled.line_pointer)
-                {
-                    case E_HMI_OLED_LINE_0: break;
-                    case E_HMI_OLED_LINE_1: oled.OLED_GUI_MENU = OLED_GUI_MONITORING;    break;
-                    case E_HMI_OLED_LINE_2: oled.OLED_GUI_MENU = OLED_GUI_STATUS;        break;
-                    case E_HMI_OLED_LINE_3: oled.OLED_GUI_MENU = OLED_GUI_DATA;          break;
-                    case E_HMI_OLED_LINE_4: break;
-                    case E_HMI_OLED_LINE_5: break;
-                    case E_HMI_OLED_LINE_6: break;
-                    case E_HMI_OLED_LINE_7: break;
-                    case E_HMI_OLED_LINE_8: break;
-                    case E_HMI_OLED_LINE_9: break;
-                    default:                break;
-                }break;
+                case E_HMI_OLED_BTN_UP:      oled.line_pointer = (oled.line_pointer >= oled.max_pointer) ? oled.max_pointer : oled.line_pointer +1; break;
+                case E_HMI_OLED_BTN_DOWN:    oled.line_pointer = (oled.line_pointer <= oled.min_pointer) ? oled.min_pointer : oled.line_pointer -1; break;
+                case E_HMI_OLED_BTN_OK:
+                    switch (oled.line_pointer)
+                    {
+                        case E_HMI_OLED_LINE_0: break;
+                        case E_HMI_OLED_LINE_1: oled.OLED_GUI_MENU = OLED_GUI_MONITORING;    break;
+                        case E_HMI_OLED_LINE_2: oled.OLED_GUI_MENU = OLED_GUI_STATUS;        break;
+                        case E_HMI_OLED_LINE_3: oled.OLED_GUI_MENU = OLED_GUI_DATA;          break;
+                        case E_HMI_OLED_LINE_4: break;
+                        case E_HMI_OLED_LINE_5: break;
+                        case E_HMI_OLED_LINE_6: break;
+                        case E_HMI_OLED_LINE_7: break;
+                        case E_HMI_OLED_LINE_8: break;
+                        case E_HMI_OLED_LINE_9: break;
+                        default:                break;
+                    }break;
 
-            case E_HMI_OLED_BTN_RETURN:
-            default: break;
+                case E_HMI_OLED_BTN_RETURN:
+                default: break;
             }
         }
         else if(button == E_HMI_OLED_BTN_RETURN)
@@ -289,18 +262,18 @@ static void handler_btn(void* parameters)
  * ************************************************************* **/
 static void handler_uart(void* parameters)
 {
-    uint8_t data[MAX_RX_BUFFER_SIZE] = {0};
+    uint8_t frame[MAX_RX_BUFFER_SIZE] = {0};
     uint8_t buffID[ID_SIZE+1] = {0};
-    uint8_t id = {0};
+    uint8_t id = 0;
 
     while(1)
     {
-        if(xQueueReceive(QueueHandle_uart, &data, portMAX_DELAY))
+        if(xQueueReceive(QueueHandle_uart, &frame, portMAX_DELAY))
         {
-            if(data[0] == '[' && data[3] == ']')
+            if(frame[0] == '[' && frame[3] == ']')
             {
-                // ID parsing (from string to int)
-	            memcpy(buffID, (char*)(data + ID_OFFSET), ID_SIZE);
+                // parsing 
+	            memcpy(buffID, (char*)(frame + ID_OFFSET), ID_SIZE);
 	            buffID[2] = '\0';
 	            id = atoi((char*)buffID);
 
@@ -308,36 +281,38 @@ static void handler_uart(void* parameters)
                 switch (id)
                 {
                     /* none */
-                    case HMI_ID_NONE:                                                   break;
+                    case HMI_ID_NONE:                                                    break;
 
                     /* application data */
-                    case HMI_ID_APP_PHASE:          id_parser_app_phase(data);          break; 
-                    case HMI_ID_APP_WINDOW:         id_parser_app_window(data);         break; 
-                    case HMI_ID_APP_AEROC:          id_parser_app_aeroc(data);          break;   
+                    case HMI_ID_APP_PHASE:          id_parser_app_phase(frame);          break; 
+                    case HMI_ID_APP_WINDOW:         id_parser_app_window(frame);         break; 
+                    case HMI_ID_APP_AEROC:          id_parser_app_aeroc(frame);          break;   
                     
                     /* sensors data */
-                    case HMI_ID_SENS_IMU_AX:        id_parser_sens_imu_ax(data);        break; 
-                    case HMI_ID_SENS_IMU_AY:        id_parser_sens_imu_ay(data);        break;   
-                    case HMI_ID_SENS_IMU_AZ:        id_parser_sens_imu_az(data);        break;    
-                    case HMI_ID_SENS_IMU_GX:        id_parser_sens_imu_gx(data);        break; 
-                    case HMI_ID_SENS_IMU_GY:        id_parser_sens_imu_gy(data);        break;   
-                    case HMI_ID_SENS_IMU_GZ:        id_parser_sens_imu_gz(data);        break;
-                    case HMI_ID_SENS_IMU_TEMP:      id_parser_sens_imu_temp(data);      break;
-                    case HMI_ID_SENS_BARO_PRESS:    id_parser_sens_baro_press(data);    break;
-                    case HMI_ID_SENS_BARO_TEMP:     id_parser_sens_baro_temp(data);     break;
+                    case HMI_ID_SENS_IMU_AX:        id_parser_sens_imu_ax(frame);        break; 
+                    case HMI_ID_SENS_IMU_AY:        id_parser_sens_imu_ay(frame);        break;   
+                    case HMI_ID_SENS_IMU_AZ:        id_parser_sens_imu_az(frame);        break;    
+                    case HMI_ID_SENS_IMU_GX:        id_parser_sens_imu_gx(frame);        break; 
+                    case HMI_ID_SENS_IMU_GY:        id_parser_sens_imu_gy(frame);        break;   
+                    case HMI_ID_SENS_IMU_GZ:        id_parser_sens_imu_gz(frame);        break;
+                    case HMI_ID_SENS_IMU_TEMP:      id_parser_sens_imu_temp(frame);      break;
+                    case HMI_ID_SENS_IMU_ERROR:     id_parser_sens_imu_error(frame);     break;
+                    case HMI_ID_SENS_BARO_PRESS:    id_parser_sens_baro_press(frame);    break;
+                    case HMI_ID_SENS_BARO_TEMP:     id_parser_sens_baro_temp(frame);     break;
+                    case HMI_ID_SENS_BARO_ERROR:    id_parser_sens_baro_error(frame);    break;
                     
                     /* monitoring data */
-                    case HMI_ID_MNTR_BAT_SEQ:       id_parser_mntr_bat_seq(data);       break;
-                    case HMI_ID_MNTR_BAT_MOTOR1:    id_parser_mntr_bat_motor1(data);    break;
-                    case HMI_ID_MNTR_BAT_MOTOR2:    id_parser_mntr_bat_motor2(data);    break;
+                    case HMI_ID_MNTR_BAT_SEQ:       id_parser_mntr_bat_seq(frame);       break;
+                    case HMI_ID_MNTR_BAT_MOTOR1:    id_parser_mntr_bat_motor1(frame);    break;
+                    case HMI_ID_MNTR_BAT_MOTOR2:    id_parser_mntr_bat_motor2(frame);    break;
                     
                     /* recovery data */
-                    case HMI_ID_RECOV_LAST_CMD:     id_parser_recov_last_cmd(data);     break;
-                    case HMI_ID_RECOV_STATUS:       id_parser_recov_status(data);       break;
+                    case HMI_ID_RECOV_LAST_CMD:     id_parser_recov_last_cmd(frame);     break;
+                    case HMI_ID_RECOV_STATUS:       id_parser_recov_status(frame);       break;
                     
                     /* payload data */
-                    case HMI_ID_PAYLOAD_LAST_CMD:   id_parser_payload_last_cmd(data);   break; 
-                    case HMI_ID_PAYLOAD_STATUS:     id_parser_payload_status(data);     break;
+                    case HMI_ID_PAYLOAD_LAST_CMD:   id_parser_payload_last_cmd(frame);   break; 
+                    case HMI_ID_PAYLOAD_STATUS:     id_parser_payload_status(frame);     break;
 
                     default:                                                            break;
 
@@ -420,24 +395,23 @@ static void OLED_GUI_DATA(void)
  * ************************************************************* **/
 static void id_parser_app_phase(uint8_t* data)
 {
+    memcpy(hmi_storage.APP_PHASE, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+
     /* phase wait */
-    if(strcmp("w", (char*)(data + PAYLOAD_OFFSET)))
+    if(strcmp("wait", (char*)(data + PAYLOAD_OFFSET)))
     {
-        memcpy(hmi_storage.APP_PHASE, APP_PHASE_WAIT, sizeof(APP_PHASE_WAIT));
         API_LEDS_SEND_CMD(E_LIST_LED4, E_CMD_LEDS_GREEN);
     }
     else
     /* phase ascend */
-    if(strcmp("a", (char*)(data + PAYLOAD_OFFSET)))
+    if(strcmp("ascend", (char*)(data + PAYLOAD_OFFSET)))
     {
-        memcpy(hmi_storage.APP_PHASE, APP_PHASE_ASCEND, sizeof(APP_PHASE_ASCEND));
         API_LEDS_SEND_CMD(E_LIST_LED4, E_CMD_LEDS_RED);
     }
     else
     /* phase descend */
-    if(strcmp("d", (char*)(data + PAYLOAD_OFFSET)))
+    if(strcmp("descend", (char*)(data + PAYLOAD_OFFSET)))
     {
-        memcpy(hmi_storage.APP_PHASE, APP_PHASE_DESCEND, sizeof(APP_PHASE_DESCEND));
         API_LEDS_SEND_CMD(E_LIST_LED4, E_CMD_LEDS_NONE);
     }
 }
@@ -450,16 +424,16 @@ static void id_parser_app_phase(uint8_t* data)
 static void id_parser_app_window(uint8_t* data)
 {
     /* window in */
-    if(strcmp("i", (char*)(data + PAYLOAD_OFFSET)))
+    if(strcmp("in", (char*)(data + PAYLOAD_OFFSET)))
     {
-        memcpy(hmi_storage.APP_WINDOW, APP_WINDOW_IN, sizeof(APP_WINDOW_IN));
+        memcpy(hmi_storage.APP_WINDOW, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
         API_LEDS_SEND_CMD(E_LIST_LED4, E_CMD_LEDS_BLUE);
     }
     else
     /* window out */
-    if(strcmp("o", (char*)(data + PAYLOAD_OFFSET)))
+    if(strcmp("out", (char*)(data + PAYLOAD_OFFSET)))
     {
-        memcpy(hmi_storage.APP_WINDOW, APP_WINDOW_OUT, sizeof(APP_WINDOW_OUT));
+        memcpy(hmi_storage.APP_WINDOW, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
         API_LEDS_SEND_CMD(E_LIST_LED4, E_CMD_LEDS_NONE);
     }
 }
@@ -471,7 +445,7 @@ static void id_parser_app_window(uint8_t* data)
  * ************************************************************* **/
 static void id_parser_app_aeroc(uint8_t* data)
 {
-    memcpy(hmi_storage.APP_AEROC, APP_AEROC_RELEASED, sizeof(APP_AEROC_RELEASED));
+    memcpy(hmi_storage.APP_AEROC, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
     API_LEDS_SEND_CMD(E_LIST_LED5, E_CMD_LEDS_RED);
 }
 
@@ -550,6 +524,16 @@ static void id_parser_sens_imu_temp(uint8_t* data)
  * 
  * @param       data 
  * ************************************************************* **/
+static void id_parser_sens_imu_error(uint8_t* data)
+{
+    memcpy(hmi_storage.SENS_IMU_ERROR, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+}
+
+/** ************************************************************* *
+ * @brief       
+ * 
+ * @param       data 
+ * ************************************************************* **/
 static void id_parser_sens_baro_press(uint8_t* data)
 {
     memcpy(hmi_storage.SENS_BARO_PRESS, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
@@ -562,7 +546,17 @@ static void id_parser_sens_baro_press(uint8_t* data)
  * ************************************************************* **/
 static void id_parser_sens_baro_temp(uint8_t* data)
 {
-    memcpy(hmi_storage.SENS_IMU_TEMP, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    memcpy(hmi_storage.SENS_BARO_TEMP, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+}
+
+/** ************************************************************* *
+ * @brief       
+ * 
+ * @param       data 
+ * ************************************************************* **/
+static void id_parser_sens_baro_error(uint8_t* data)
+{
+    memcpy(hmi_storage.SENS_BARO_ERROR, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
 }
 
 /** ************************************************************* *
@@ -572,17 +566,17 @@ static void id_parser_sens_baro_temp(uint8_t* data)
  * ************************************************************* **/
 static void id_parser_mntr_bat_seq(uint8_t* data)
 {
+    memcpy(hmi_storage.MNTR_BAT_SEQ, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    
     /* battery ok */
-    if(strcmp("o", (char*)(data + PAYLOAD_OFFSET)))
+    if(strcmp("ok", (char*)(data + PAYLOAD_OFFSET)))
     {
-        memcpy(hmi_storage.MNTR_BAT_SEQ, MNTR_BAT_SEQ_OK, sizeof(MNTR_BAT_SEQ_OK));
         API_LEDS_SEND_CMD(E_LIST_LED1, E_CMD_LEDS_GREEN);
     }
     else
     /* battery ko */
-    if(strcmp("k", (char*)(data + PAYLOAD_OFFSET)))
+    if(strcmp("ko", (char*)(data + PAYLOAD_OFFSET)))
     {
-        memcpy(hmi_storage.MNTR_BAT_SEQ, MNTR_BAT_SEQ_KO, sizeof(MNTR_BAT_SEQ_KO));
         API_LEDS_SEND_CMD(E_LIST_LED1, E_CMD_LEDS_RED);
     }
 }
@@ -594,18 +588,18 @@ static void id_parser_mntr_bat_seq(uint8_t* data)
  * ************************************************************* **/
 static void id_parser_mntr_bat_motor1(uint8_t* data)
 {
+    memcpy(hmi_storage.MNTR_BAT_MOTOR1, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    
     /* battery ok */
-    if(strcmp("o", (char*)(data + PAYLOAD_OFFSET)))
+    if(strcmp("ok", (char*)(data + PAYLOAD_OFFSET)))
     {
-        memcpy(hmi_storage.MNTR_BAT_MOTOR1, MNTR_BAT_MOTOR1_OK, sizeof(MNTR_BAT_MOTOR1_OK));
-        API_LEDS_SEND_CMD(E_LIST_LED1, E_CMD_LEDS_GREEN);
+        API_LEDS_SEND_CMD(E_LIST_LED2, E_CMD_LEDS_GREEN);
     }
     else
     /* battery ko */
-    if(strcmp("k", (char*)(data + PAYLOAD_OFFSET)))
+    if(strcmp("ko", (char*)(data + PAYLOAD_OFFSET)))
     {
-        memcpy(hmi_storage.MNTR_BAT_MOTOR1, MNTR_BAT_MOTOR1_KO, sizeof(MNTR_BAT_MOTOR1_KO));
-        API_LEDS_SEND_CMD(E_LIST_LED1, E_CMD_LEDS_RED);
+        API_LEDS_SEND_CMD(E_LIST_LED2, E_CMD_LEDS_RED);
     }
 }
 
@@ -616,18 +610,18 @@ static void id_parser_mntr_bat_motor1(uint8_t* data)
  * ************************************************************* **/
 static void id_parser_mntr_bat_motor2(uint8_t* data)
 {
+    memcpy(hmi_storage.MNTR_BAT_MOTOR2, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+
     /* battery ok */
-    if(strcmp("o", (char*)(data + PAYLOAD_OFFSET)))
+    if(strcmp("ok", (char*)(data + PAYLOAD_OFFSET)))
     {
-        memcpy(hmi_storage.MNTR_BAT_MOTOR2, MNTR_BAT_MOTOR2_OK, sizeof(MNTR_BAT_MOTOR2_OK));
-        API_LEDS_SEND_CMD(E_LIST_LED1, E_CMD_LEDS_GREEN);
+        API_LEDS_SEND_CMD(E_LIST_LED3, E_CMD_LEDS_GREEN);
     }
     else
     /* battery ko */
-    if(strcmp("k", (char*)(data + PAYLOAD_OFFSET)))
+    if(strcmp("ko", (char*)(data + PAYLOAD_OFFSET)))
     {
-        memcpy(hmi_storage.MNTR_BAT_MOTOR1, MNTR_BAT_MOTOR2_KO, sizeof(MNTR_BAT_MOTOR2_KO));
-        API_LEDS_SEND_CMD(E_LIST_LED1, E_CMD_LEDS_RED);
+        API_LEDS_SEND_CMD(E_LIST_LED3, E_CMD_LEDS_RED);
     }
 }
 
@@ -638,29 +632,7 @@ static void id_parser_mntr_bat_motor2(uint8_t* data)
  * ************************************************************* **/
 static void id_parser_recov_last_cmd(uint8_t* data)
 {
-    /* no command */
-    if(strcmp("n", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        memcpy(hmi_storage.RECOV_LAST_CMD, RECOV_LAST_CMD_NONE, sizeof(RECOV_LAST_CMD_NONE));
-    }
-    else
-    /* stop command */
-    if(strcmp("s", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        memcpy(hmi_storage.RECOV_LAST_CMD, RECOV_LAST_CMD_STOP, sizeof(RECOV_LAST_CMD_STOP));
-    }
-    else
-    /* open command */
-    if(strcmp("o", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        memcpy(hmi_storage.RECOV_LAST_CMD, RECOV_LAST_CMD_OPEN, sizeof(RECOV_LAST_CMD_OPEN));
-    }
-    else
-    /* close command */
-    if(strcmp("c", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        memcpy(hmi_storage.RECOV_LAST_CMD, RECOV_LAST_CMD_CLOSE, sizeof(RECOV_LAST_CMD_CLOSE));
-    }
+    memcpy(hmi_storage.RECOV_LAST_CMD, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
 }
 
 /** ************************************************************* *
@@ -670,34 +642,7 @@ static void id_parser_recov_last_cmd(uint8_t* data)
  * ************************************************************* **/
 static void id_parser_recov_status(uint8_t* data)
 {
-    /* no command */
-    if(strcmp("n", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        memcpy(hmi_storage.RECOV_STATUS, RECOV_STATUS_NONE, sizeof(RECOV_STATUS_NONE));
-    }
-    else
-    /* stop command */
-    if(strcmp("s", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        memcpy(hmi_storage.RECOV_STATUS, RECOV_STATUS_STOPPED, sizeof(RECOV_STATUS_STOPPED));
-    }
-    else
-    /* open command */
-    if(strcmp("r", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        memcpy(hmi_storage.RECOV_STATUS, RECOV_STATUS_RUNNING, sizeof(RECOV_STATUS_RUNNING));
-    }
-    /* open command */
-    if(strcmp("o", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        memcpy(hmi_storage.RECOV_STATUS, RECOV_STATUS_OPENED, sizeof(RECOV_STATUS_OPENED));
-    }                        
-    else
-    /* close command */
-    if(strcmp("c", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        memcpy(hmi_storage.RECOV_STATUS, RECOV_STATUS_CLOSED, sizeof(RECOV_STATUS_CLOSED));
-    }
+    memcpy(hmi_storage.RECOV_STATUS, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
 }
 
 /** ************************************************************* *
@@ -707,29 +652,7 @@ static void id_parser_recov_status(uint8_t* data)
  * ************************************************************* **/
 static void id_parser_payload_last_cmd(uint8_t* data)
 {
-    /* no command */
-    if(strcmp("n", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        memcpy(hmi_storage.PAYLOAD_LAST_CMD, PAYLOAD_LAST_CMD_NONE, sizeof(PAYLOAD_LAST_CMD_NONE));
-    }
-    else
-    /* stop command */
-    if(strcmp("s", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        memcpy(hmi_storage.PAYLOAD_LAST_CMD, PAYLOAD_LAST_CMD_STOP, sizeof(PAYLOAD_LAST_CMD_STOP));
-    }
-    else
-    /* open command */
-    if(strcmp("o", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        memcpy(hmi_storage.PAYLOAD_LAST_CMD, PAYLOAD_LAST_CMD_OPEN, sizeof(PAYLOAD_LAST_CMD_OPEN));
-    }
-    else
-    /* close command */
-    if(strcmp("c", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        memcpy(hmi_storage.PAYLOAD_LAST_CMD, PAYLOAD_LAST_CMD_CLOSE, sizeof(PAYLOAD_LAST_CMD_CLOSE));
-    }
+    memcpy(hmi_storage.PAYLOAD_LAST_CMD, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
 }
 
 /** ************************************************************* *
@@ -739,34 +662,7 @@ static void id_parser_payload_last_cmd(uint8_t* data)
  * ************************************************************* **/
 static void id_parser_payload_status(uint8_t* data)
 {
-    /* no command */
-    if(strcmp("n", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        memcpy(hmi_storage.PAYLOAD_STATUS, PAYLOAD_STATUS_NONE, sizeof(PAYLOAD_STATUS_NONE));
-    }
-    else
-    /* stop command */
-    if(strcmp("s", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        memcpy(hmi_storage.PAYLOAD_STATUS, PAYLOAD_STATUS_STOPPED, sizeof(PAYLOAD_STATUS_STOPPED));
-    }
-    else
-    /* open command */
-    if(strcmp("r", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        memcpy(hmi_storage.PAYLOAD_STATUS, PAYLOAD_STATUS_RUNNING, sizeof(PAYLOAD_STATUS_RUNNING));
-    }
-    /* open command */
-    if(strcmp("o", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        memcpy(hmi_storage.PAYLOAD_STATUS, PAYLOAD_STATUS_OPENED, sizeof(PAYLOAD_STATUS_OPENED));
-    }                        
-    else
-    /* close command */
-    if(strcmp("c", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        memcpy(hmi_storage.PAYLOAD_STATUS, PAYLOAD_STATUS_CLOSED, sizeof(RECOV_STATUS_CLOSED));
-    }
+    memcpy(hmi_storage.PAYLOAD_STATUS, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
 }
 
 /* ============================================================= ==
