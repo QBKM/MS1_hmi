@@ -4,7 +4,7 @@
 "./Components/HMI/oled_ascii.o"
 "./Components/HMI/oled_driver.o"
 "./Components/HMI/oled_gfx.o"
-"./Components/HMI/ssd1351.o"
+"./Core/Src/dma.o"
 "./Core/Src/gpio.o"
 "./Core/Src/main.o"
 "./Core/Src/spi.o"

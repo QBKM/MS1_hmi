@@ -66,7 +66,7 @@ static void handler_leds(void* parameters)
     while(1)
     {
         /* check for new command */
-        if(xQueueReceive(QueueHandle_leds_cmd, &led, (TickType_t)0)) 
+        if(xQueueReceive(QueueHandle_leds_cmd, &led, portMAX_DELAY)) 
         {
             switch (led.list)
             {
@@ -290,7 +290,7 @@ void API_LEDS_START(void)
     HAL_GPIO_WritePin(RGB5_R_GPIO_Port, RGB5_R_Pin, GPIO_PIN_RESET);
 
     /* create the queues */
-    QueueHandle_leds_cmd  = xQueueCreate(5, sizeof(ENUM_LEDS_CMD_t));
+    QueueHandle_leds_cmd  = xQueueCreate(32, sizeof(ENUM_LEDS_CMD_t));
     
     /* create the task */
     status = xTaskCreate(handler_leds, "task_leds", configMINIMAL_STACK_SIZE, NULL, TASK_PRIORITY_APP_LEDS, &TaskHandle_leds);

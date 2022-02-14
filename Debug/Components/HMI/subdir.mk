@@ -10,8 +10,7 @@ C_SRCS += \
 ../Components/HMI/leds.c \
 ../Components/HMI/oled_ascii.c \
 ../Components/HMI/oled_driver.c \
-../Components/HMI/oled_gfx.c \
-../Components/HMI/ssd1351.c 
+../Components/HMI/oled_gfx.c 
 
 OBJS += \
 ./Components/HMI/fonts.o \
@@ -19,8 +18,7 @@ OBJS += \
 ./Components/HMI/leds.o \
 ./Components/HMI/oled_ascii.o \
 ./Components/HMI/oled_driver.o \
-./Components/HMI/oled_gfx.o \
-./Components/HMI/ssd1351.o 
+./Components/HMI/oled_gfx.o 
 
 C_DEPS += \
 ./Components/HMI/fonts.d \
@@ -28,8 +26,7 @@ C_DEPS += \
 ./Components/HMI/leds.d \
 ./Components/HMI/oled_ascii.d \
 ./Components/HMI/oled_driver.d \
-./Components/HMI/oled_gfx.d \
-./Components/HMI/ssd1351.d 
+./Components/HMI/oled_gfx.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -39,7 +36,7 @@ Components/HMI/%.o: ../Components/HMI/%.c Components/HMI/subdir.mk
 clean: clean-Components-2f-HMI
 
 clean-Components-2f-HMI:
-	-$(RM) ./Components/HMI/fonts.d ./Components/HMI/fonts.o ./Components/HMI/hmi.d ./Components/HMI/hmi.o ./Components/HMI/leds.d ./Components/HMI/leds.o ./Components/HMI/oled_ascii.d ./Components/HMI/oled_ascii.o ./Components/HMI/oled_driver.d ./Components/HMI/oled_driver.o ./Components/HMI/oled_gfx.d ./Components/HMI/oled_gfx.o ./Components/HMI/ssd1351.d ./Components/HMI/ssd1351.o
+	-$(RM) ./Components/HMI/fonts.d ./Components/HMI/fonts.o ./Components/HMI/hmi.d ./Components/HMI/hmi.o ./Components/HMI/leds.d ./Components/HMI/leds.o ./Components/HMI/oled_ascii.d ./Components/HMI/oled_ascii.o ./Components/HMI/oled_driver.d ./Components/HMI/oled_driver.o ./Components/HMI/oled_gfx.d ./Components/HMI/oled_gfx.o
 
 .PHONY: clean-Components-2f-HMI
 

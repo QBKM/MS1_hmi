@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "spi.h"
 #include "usart.h"
 #include "gpio.h"
@@ -91,6 +92,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
+  MX_DMA_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 
@@ -168,31 +170,39 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     {
         case BTN1_Pin :
             //SEGGER_SYSVIEW_RecordEnterISR();
-            API_HMI_CALLBACK(E_HMI_BTN1);
+            API_HMI_BTN_CALLBACK(E_HMI_BTN1);
             //SEGGER_SYSVIEW_RecordExitISR();
             break;
 
         case BTN2_Pin :
             //SEGGER_SYSVIEW_RecordEnterISR();
-            API_HMI_CALLBACK(E_HMI_BTN2);
+            API_HMI_BTN_CALLBACK(E_HMI_BTN2);
             //SEGGER_SYSVIEW_RecordExitISR();
             break;
 
         case BTN3_Pin :
             //SEGGER_SYSVIEW_RecordEnterISR();
-            API_HMI_CALLBACK(E_HMI_BTN3);
+            API_HMI_BTN_CALLBACK(E_HMI_BTN3);
             //SEGGER_SYSVIEW_RecordExitISR();
             break;
 
         case BTN4_Pin :
             //SEGGER_SYSVIEW_RecordEnterISR();
-            API_HMI_CALLBACK(E_HMI_BTN4);
+            API_HMI_BTN_CALLBACK(E_HMI_BTN4);
             //SEGGER_SYSVIEW_RecordExitISR();
             break;
         
         default:
             break;
     }
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    static uint8_t* RxBuffer = NULL;
+
+    HAL_UART_Receive_DMA(&huart2, RxBuffer, MAX_RX_BUFFER_SIZE);
+    API_HMI_UART_CALLBACK(RxBuffer);
 }
 
 /* USER CODE END 4 */

@@ -18,6 +18,11 @@
 #include "stdbool.h"
 
 /* ------------------------------------------------------------- --
+   defines
+-- ------------------------------------------------------------- */
+#define MAX_RX_BUFFER_SIZE    16
+
+/* ------------------------------------------------------------- --
    types
 -- ------------------------------------------------------------- */
 typedef enum
@@ -32,7 +37,8 @@ typedef enum
    function propotypes
 -- ------------------------------------------------------------- */
 void API_HMI_START(void);
-void API_HMI_CALLBACK(ENUM_HMI_BTN_t btn);
+void API_HMI_BTN_CALLBACK(ENUM_HMI_BTN_t btn);
+void API_HMI_UART_CALLBACK(uint8_t* data);
 
 /* ------------------------------------------------------------- --
    end of file

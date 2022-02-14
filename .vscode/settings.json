@@ -5,6 +5,7 @@
         "stm32f4xx_hal_conf.h": "c",
         "stm32f4xx_hal_spi.h": "c",
         "stm32f4xx_hal_def.h": "c",
-        "ssd1351.h": "c"
+        "ssd1351.h": "c",
+        "oled_driver.h": "c"
     }
 }
