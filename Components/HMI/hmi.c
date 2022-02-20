@@ -13,28 +13,23 @@
 /* ------------------------------------------------------------- --
    include
 -- ------------------------------------------------------------- */
-#include "leds.h"
-#include "hmi.h"
-#include "list_uart.h"
+
 #include "freeRtos.h"
 #include "task.h"
 #include "gpio.h"
 #include "queue.h"
-#include "string.h"
-#include "stdlib.h"
+
 #include "oled_gfx.h"
+
+#include "hmi.h"
+
+#include "string.h"
 
 #include "MS1_config.h"
 
 /* ------------------------------------------------------------- --
    defines
 -- ------------------------------------------------------------- */
-#define ID_SIZE         2
-#define PAYLOAD_SIZE    12
-
-#define ID_OFFSET       1
-#define PAYLOAD_OFFSET  4
-
 #define OLED_DEFAULT_PERIOD_TASK 100
 
 #define OLED_MENU_LIST_0        
@@ -42,19 +37,28 @@
 #define OLED_MENU_LIST_2        OLED_GUI_STATUS
 #define OLED_MENU_LIST_3        OLED_GUI_DATA
 #define OLED_MENU_LIST_4        
-#define OLED_MENU_LIST_5        
+#define OLED_MENU_LIST_5
+
+#define OLED_MENU_LINE_0		0
+#define OLED_MENU_LINE_1		16
+#define OLED_MENU_LINE_2		24
+#define OLED_MENU_LINE_3		32
+#define OLED_MENU_LINE_4		40
+#define OLED_MENU_LINE_5		48
+
+
+
+
+#define OLED_BTN_NONE       E_BTN_NONE
+#define OLED_BTN_UP         E_BTN_1
+#define OLED_BTN_DOWN       E_BTN_3
+#define OLED_BTN_OK         E_BTN_2
+#define OLED_BTN_RETURN     E_BTN_4
+
 
 /* ------------------------------------------------------------- --
    types
 -- ------------------------------------------------------------- */
-typedef enum 
-{
-    E_HMI_OLED_BTN_NONE,
-    E_HMI_OLED_BTN_UP,
-    E_HMI_OLED_BTN_DOWN, 
-    E_HMI_OLED_BTN_OK,
-    E_HMI_OLED_BTN_RETURN
-}ENUM_HMI_OLED_BTN_t;
 
 typedef enum
 {
@@ -85,59 +89,22 @@ typedef struct
     void (*OLED_GUI_MENU)(void);
 }STRUCT_HMI_OLED_t;
 
-typedef struct
-{
-    uint8_t APP_PHASE[PAYLOAD_SIZE];
-    uint8_t APP_AEROC[PAYLOAD_SIZE];
-    uint8_t APP_WINDOW[PAYLOAD_SIZE];
-    uint8_t APP_RECOV_APOGEE[PAYLOAD_SIZE];
-
-    uint8_t SENS_IMU_AX[PAYLOAD_SIZE];
-    uint8_t SENS_IMU_AY[PAYLOAD_SIZE];
-    uint8_t SENS_IMU_AZ[PAYLOAD_SIZE];
-    uint8_t SENS_IMU_GX[PAYLOAD_SIZE];
-    uint8_t SENS_IMU_GY[PAYLOAD_SIZE];
-    uint8_t SENS_IMU_GZ[PAYLOAD_SIZE];
-    uint8_t SENS_IMU_TEMP[PAYLOAD_SIZE];
-    uint8_t SENS_IMU_ERROR[PAYLOAD_SIZE];
-    uint8_t SENS_BARO_PRESS[PAYLOAD_SIZE];
-    uint8_t SENS_BARO_TEMP[PAYLOAD_SIZE];
-    uint8_t SENS_BARO_ERROR[PAYLOAD_SIZE];
-
-    uint8_t MNTR_BAT_SEQ[PAYLOAD_SIZE];
-    uint8_t MNTR_BAT_MOTOR1[PAYLOAD_SIZE];
-    uint8_t MNTR_BAT_MOTOR2[PAYLOAD_SIZE];
-
-    uint8_t RECOV_LAST_CMD[PAYLOAD_SIZE];
-    uint8_t RECOV_STATUS[PAYLOAD_SIZE];
-
-    uint8_t PAYLOAD_LAST_CMD[PAYLOAD_SIZE];
-    uint8_t PAYLOAD_STATUS[PAYLOAD_SIZE];
-}STRUCT_HMI_STORAGE_t;
-
 /* ------------------------------------------------------------- --
    handles
 -- ------------------------------------------------------------- */
 TaskHandle_t TaskHandle_oled;
-TaskHandle_t TaskHandle_btn;
-TaskHandle_t TaskHandle_uart;
-QueueHandle_t QueueHandle_btn;
-QueueHandle_t QueueHandle_uart;
-
 
 /* ------------------------------------------------------------- --
    variables
 -- ------------------------------------------------------------- */
-STRUCT_HMI_STORAGE_t hmi_storage = {0};
+ENUM_BTN_LIST_t button = OLED_BTN_NONE;
+STRUCT_UART_STORAGE_t parsed_data = {0};
 STRUCT_HMI_OLED_t oled = {0};
-ENUM_HMI_OLED_BTN_t button = E_HMI_OLED_BTN_NONE;
 
 /* ------------------------------------------------------------- --
    prototypes
 -- ------------------------------------------------------------- */
 static void handler_oled(void* parameters);
-static void handler_btn(void* parameters);
-static void handler_uart(void* parameters);
 
 /* menu GUI */
 static void OLED_GUI_START(void);
@@ -145,33 +112,8 @@ static void OLED_GUI_MAIN(void);
 static void OLED_GUI_MONITORING(void);
 static void OLED_GUI_STATUS(void);
 static void OLED_GUI_DATA(void);
-
-/* UART id parsing fucntions */
-static void id_parser_app_phase(uint8_t* data);
-static void id_parser_app_window(uint8_t* data);
-static void id_parser_app_aeroc(uint8_t* data);
-
-static void id_parser_sens_imu_ax(uint8_t* data);
-static void id_parser_sens_imu_ay(uint8_t* data);
-static void id_parser_sens_imu_az(uint8_t* data);
-static void id_parser_sens_imu_gx(uint8_t* data);
-static void id_parser_sens_imu_gy(uint8_t* data);
-static void id_parser_sens_imu_gz(uint8_t* data);
-static void id_parser_sens_imu_error(uint8_t* data);
-static void id_parser_sens_imu_temp(uint8_t* data);
-static void id_parser_sens_baro_press(uint8_t* data);
-static void id_parser_sens_baro_temp(uint8_t* data);
-static void id_parser_sens_baro_error(uint8_t* data);
-
-static void id_parser_mntr_bat_seq(uint8_t* data);
-static void id_parser_mntr_bat_motor1(uint8_t* data);
-static void id_parser_mntr_bat_motor2(uint8_t* data);
-
-static void id_parser_recov_last_cmd(uint8_t* data);
-static void id_parser_recov_status(uint8_t* data);
-
-static void id_parser_payload_last_cmd(uint8_t* data);
-static void id_parser_payload_status(uint8_t* data);
+static void OLED_GUI_SLEEP(void);
+static void OLED_GUI_RESET(void);
 
 /* ============================================================= ==
    tasks functions
@@ -196,9 +138,9 @@ static void handler_oled(void* parameters)
         {
             switch (button)
             {
-                case E_HMI_OLED_BTN_UP:      oled.line_pointer = (oled.line_pointer >= oled.max_pointer) ? oled.max_pointer : oled.line_pointer +1; break;
-                case E_HMI_OLED_BTN_DOWN:    oled.line_pointer = (oled.line_pointer <= oled.min_pointer) ? oled.min_pointer : oled.line_pointer -1; break;
-                case E_HMI_OLED_BTN_OK:
+                case OLED_BTN_UP:      oled.line_pointer = (oled.line_pointer >= oled.max_pointer) ? oled.max_pointer : oled.line_pointer +1; break;
+                case OLED_BTN_DOWN:    oled.line_pointer = (oled.line_pointer <= oled.min_pointer) ? oled.min_pointer : oled.line_pointer -1; break;
+                case OLED_BTN_OK:
                     switch (oled.line_pointer)
                     {
                         case E_HMI_OLED_LINE_0: break;
@@ -212,19 +154,23 @@ static void handler_oled(void* parameters)
                         case E_HMI_OLED_LINE_8: break;
                         case E_HMI_OLED_LINE_9: break;
                         default:                break;
-                    }break;
+                    }
+                    break;
 
-                case E_HMI_OLED_BTN_RETURN:
+                case OLED_BTN_RETURN:
                 default: break;
             }
+            button = E_BTN_NONE;
         }
-        else if(button == E_HMI_OLED_BTN_RETURN)
+        else if(button == OLED_BTN_RETURN)
         {
             oled.OLED_GUI_MENU = OLED_GUI_MAIN;
+            oled.menu_flag = E_HMI_OLED_MENU_NEW;
+            button = E_BTN_NONE;
         }
 
         /* refresh the page */
-        oled.OLED_GUI_MENU();
+        oled.OLED_GUI_MENU(); 
 
         vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(OLED_DEFAULT_PERIOD_TASK));
     }
@@ -233,95 +179,7 @@ static void handler_oled(void* parameters)
 /** ************************************************************* *
  * @brief       
  * 
- * @param       parameters 
  * ************************************************************* **/
-static void handler_btn(void* parameters)
-{
-    ENUM_HMI_BTN_t btn;
-
-    while(1)
-    {
-        if(xQueueReceive(QueueHandle_btn, &btn, portMAX_DELAY))
-        {
-            switch (btn)
-            {
-                case E_HMI_BTN1: button = E_HMI_OLED_BTN_UP;        break;
-                case E_HMI_BTN2: button = E_HMI_OLED_BTN_DOWN;      break;
-                case E_HMI_BTN3: button = E_HMI_OLED_BTN_RETURN;    break;
-                case E_HMI_BTN4: button = E_HMI_OLED_BTN_OK;        break;
-                default:                                            break;
-            }
-        }
-    }
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * @param       parameters 
- * ************************************************************* **/
-static void handler_uart(void* parameters)
-{
-    uint8_t frame[MAX_RX_BUFFER_SIZE] = {0};
-    uint8_t buffID[ID_SIZE+1] = {0};
-    uint8_t id = 0;
-
-    while(1)
-    {
-        if(xQueueReceive(QueueHandle_uart, &frame, portMAX_DELAY))
-        {
-            if(frame[0] == '[' && frame[3] == ']')
-            {
-                // parsing 
-	            memcpy(buffID, (char*)(frame + ID_OFFSET), ID_SIZE);
-	            buffID[2] = '\0';
-	            id = atoi((char*)buffID);
-
-                /* process the payload with the associated ID */
-                switch (id)
-                {
-                    /* none */
-                    case HMI_ID_NONE:                                                    break;
-
-                    /* application data */
-                    case HMI_ID_APP_PHASE:          id_parser_app_phase(frame);          break; 
-                    case HMI_ID_APP_WINDOW:         id_parser_app_window(frame);         break; 
-                    case HMI_ID_APP_AEROC:          id_parser_app_aeroc(frame);          break;   
-                    
-                    /* sensors data */
-                    case HMI_ID_SENS_IMU_AX:        id_parser_sens_imu_ax(frame);        break; 
-                    case HMI_ID_SENS_IMU_AY:        id_parser_sens_imu_ay(frame);        break;   
-                    case HMI_ID_SENS_IMU_AZ:        id_parser_sens_imu_az(frame);        break;    
-                    case HMI_ID_SENS_IMU_GX:        id_parser_sens_imu_gx(frame);        break; 
-                    case HMI_ID_SENS_IMU_GY:        id_parser_sens_imu_gy(frame);        break;   
-                    case HMI_ID_SENS_IMU_GZ:        id_parser_sens_imu_gz(frame);        break;
-                    case HMI_ID_SENS_IMU_TEMP:      id_parser_sens_imu_temp(frame);      break;
-                    case HMI_ID_SENS_IMU_ERROR:     id_parser_sens_imu_error(frame);     break;
-                    case HMI_ID_SENS_BARO_PRESS:    id_parser_sens_baro_press(frame);    break;
-                    case HMI_ID_SENS_BARO_TEMP:     id_parser_sens_baro_temp(frame);     break;
-                    case HMI_ID_SENS_BARO_ERROR:    id_parser_sens_baro_error(frame);    break;
-                    
-                    /* monitoring data */
-                    case HMI_ID_MNTR_BAT_SEQ:       id_parser_mntr_bat_seq(frame);       break;
-                    case HMI_ID_MNTR_BAT_MOTOR1:    id_parser_mntr_bat_motor1(frame);    break;
-                    case HMI_ID_MNTR_BAT_MOTOR2:    id_parser_mntr_bat_motor2(frame);    break;
-                    
-                    /* recovery data */
-                    case HMI_ID_RECOV_LAST_CMD:     id_parser_recov_last_cmd(frame);     break;
-                    case HMI_ID_RECOV_STATUS:       id_parser_recov_status(frame);       break;
-                    
-                    /* payload data */
-                    case HMI_ID_PAYLOAD_LAST_CMD:   id_parser_payload_last_cmd(frame);   break; 
-                    case HMI_ID_PAYLOAD_STATUS:     id_parser_payload_status(frame);     break;
-
-                    default:                                                            break;
-
-                }
-            }
-        }
-    }
-}
-
 static void OLED_GUI_START(void)
 {
     if(oled.menu_flag == E_HMI_OLED_MENU_NEW)
@@ -335,16 +193,26 @@ static void OLED_GUI_START(void)
         Clear_Screen();
         Set_Color(WHITE);
         print_String(0, 0, (const uint8_t*)"Hello World !", FONT_5X8);
+        print_String(0, 15, (const uint8_t*)"Waiting for SEQ ready...", FONT_5X8);
     }
 
     /* print the image */
     /* wait for seq */
-    //if(seq == ok)
-    //oled.OLED_GUI_MENU = OLED_GUI_MAIN;
-
+    if(!strcmp((char*)parsed_data.APP_PHASE, "wait"))
+    {
+        oled.OLED_GUI_MENU = OLED_GUI_MAIN;
+        oled.menu_flag = E_HMI_OLED_MENU_NEW;
+    }
 }
+
+/** ************************************************************* *
+ * @brief       
+ * 
+ * ************************************************************* **/
 static void OLED_GUI_MAIN(void)
 {
+	static ENUM_HMI_OLED_POINTER_t last_pointer = E_HMI_OLED_LINE_1;
+
     if(oled.menu_flag == E_HMI_OLED_MENU_NEW)
     {
         //seeting for the menu
@@ -352,8 +220,41 @@ static void OLED_GUI_MAIN(void)
         oled.min_pointer  = E_HMI_OLED_LINE_1;
         oled.max_pointer  = E_HMI_OLED_LINE_5;
         oled.menu_flag    = E_HMI_OLED_MENU_OLD;
+
+        Clear_Screen();
+        Set_Color(WHITE);
+        print_String(0, 0, (const uint8_t*)"===== MAIN MENU =====", FONT_5X8);
+        print_String(10, 15, (const uint8_t*)"Monitoring", FONT_5X8);
+        print_String(10, 23, (const uint8_t*)"Status", FONT_5X8);
+        print_String(10, 31, (const uint8_t*)"Data", FONT_5X8);
+        print_String(10, 39, (const uint8_t*)"Sleep", FONT_5X8);
+        print_String(10, 47, (const uint8_t*)"Reset all", FONT_5X8);
+        print_String(0, OLED_MENU_LINE_1, (const uint8_t*)">", FONT_5X8);
+    }
+
+    if(last_pointer != oled.line_pointer)
+    {
+    	last_pointer = oled.line_pointer;
+    	Set_Color(BLACK);
+    	Fill_Rect(0,OLED_MENU_LINE_1 , 5, OLED_MENU_LINE_5);
+    	Set_Color(WHITE);
+
+		switch(oled.line_pointer)
+		{
+		case E_HMI_OLED_LINE_1 : print_String(0, OLED_MENU_LINE_1, (const uint8_t*)">", FONT_5X8); break;
+		case E_HMI_OLED_LINE_2 : print_String(0, OLED_MENU_LINE_2, (const uint8_t*)">", FONT_5X8); break;
+		case E_HMI_OLED_LINE_3 : print_String(0, OLED_MENU_LINE_3, (const uint8_t*)">", FONT_5X8); break;
+		case E_HMI_OLED_LINE_4 : print_String(0, OLED_MENU_LINE_4, (const uint8_t*)">", FONT_5X8); break;
+		case E_HMI_OLED_LINE_5 : print_String(0, OLED_MENU_LINE_5, (const uint8_t*)">", FONT_5X8); break;
+		default: break;
+		}
     }
 }
+
+/** ************************************************************* *
+ * @brief       
+ * 
+ * ************************************************************* **/
 static void OLED_GUI_MONITORING(void)
 {
     if(oled.menu_flag == E_HMI_OLED_MENU_NEW)
@@ -365,6 +266,11 @@ static void OLED_GUI_MONITORING(void)
         oled.menu_flag    = E_HMI_OLED_MENU_OLD;
     }
 }
+
+/** ************************************************************* *
+ * @brief       
+ * 
+ * ************************************************************* **/
 static void OLED_GUI_STATUS(void)
 {
     if(oled.menu_flag == E_HMI_OLED_MENU_NEW)
@@ -376,6 +282,11 @@ static void OLED_GUI_STATUS(void)
         oled.menu_flag    = E_HMI_OLED_MENU_OLD;
     }
 }
+
+/** ************************************************************* *
+ * @brief       
+ * 
+ * ************************************************************* **/
 static void OLED_GUI_DATA(void)
 {
     if(oled.menu_flag == E_HMI_OLED_MENU_NEW)
@@ -391,278 +302,32 @@ static void OLED_GUI_DATA(void)
 /** ************************************************************* *
  * @brief       
  * 
- * @param       data 
  * ************************************************************* **/
-static void id_parser_app_phase(uint8_t* data)
+static void OLED_GUI_SLEEP(void)
 {
-    memcpy(hmi_storage.APP_PHASE, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    if(oled.menu_flag == E_HMI_OLED_MENU_NEW)
+    {
+        //seeting for the menu
+        oled.line_pointer = E_HMI_OLED_LINE_0;
+        oled.min_pointer  = E_HMI_OLED_LINE_0;
+        oled.max_pointer  = E_HMI_OLED_LINE_0;
+        oled.menu_flag    = E_HMI_OLED_MENU_OLD;
 
-    /* phase wait */
-    if(strcmp("wait", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        API_LEDS_SEND_CMD(E_LIST_LED4, E_CMD_LEDS_GREEN);
-    }
-    else
-    /* phase ascend */
-    if(strcmp("ascend", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        API_LEDS_SEND_CMD(E_LIST_LED4, E_CMD_LEDS_RED);
-    }
-    else
-    /* phase descend */
-    if(strcmp("descend", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        API_LEDS_SEND_CMD(E_LIST_LED4, E_CMD_LEDS_NONE);
+        print_String(30, 30, (const uint8_t*)"POWER SAVING MODE", FONT_5X8);
     }
 }
 
 /** ************************************************************* *
  * @brief       
  * 
- * @param       data 
  * ************************************************************* **/
-static void id_parser_app_window(uint8_t* data)
+static void OLED_GUI_RESET(void)
 {
-    /* window in */
-    if(strcmp("in", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        memcpy(hmi_storage.APP_WINDOW, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
-        API_LEDS_SEND_CMD(E_LIST_LED4, E_CMD_LEDS_BLUE);
-    }
-    else
-    /* window out */
-    if(strcmp("out", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        memcpy(hmi_storage.APP_WINDOW, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
-        API_LEDS_SEND_CMD(E_LIST_LED4, E_CMD_LEDS_NONE);
-    }
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * @param       data 
- * ************************************************************* **/
-static void id_parser_app_aeroc(uint8_t* data)
-{
-    memcpy(hmi_storage.APP_AEROC, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
-    API_LEDS_SEND_CMD(E_LIST_LED5, E_CMD_LEDS_RED);
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * @param       data 
- * ************************************************************* **/
-static void id_parser_sens_imu_ax(uint8_t* data)
-{
-    memcpy(hmi_storage.SENS_IMU_AX, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * @param       data 
- * ************************************************************* **/
-static void id_parser_sens_imu_ay(uint8_t* data)
-{
-    memcpy(hmi_storage.SENS_IMU_AY, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * @param       data 
- * ************************************************************* **/
-static void id_parser_sens_imu_az(uint8_t* data)
-{
-    memcpy(hmi_storage.SENS_IMU_AZ, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * @param       data 
- * ************************************************************* **/
-static void id_parser_sens_imu_gx(uint8_t* data)
-{
-    memcpy(hmi_storage.SENS_IMU_GX, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * @param       data 
- * ************************************************************* **/
-static void id_parser_sens_imu_gy(uint8_t* data)
-{
-    memcpy(hmi_storage.SENS_IMU_GY, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * @param       data 
- * ************************************************************* **/
-static void id_parser_sens_imu_gz(uint8_t* data)
-{
-    memcpy(hmi_storage.SENS_IMU_GZ, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * @param       data 
- * ************************************************************* **/
-static void id_parser_sens_imu_temp(uint8_t* data)
-{
-    memcpy(hmi_storage.SENS_IMU_TEMP, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * @param       data 
- * ************************************************************* **/
-static void id_parser_sens_imu_error(uint8_t* data)
-{
-    memcpy(hmi_storage.SENS_IMU_ERROR, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * @param       data 
- * ************************************************************* **/
-static void id_parser_sens_baro_press(uint8_t* data)
-{
-    memcpy(hmi_storage.SENS_BARO_PRESS, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * @param       data 
- * ************************************************************* **/
-static void id_parser_sens_baro_temp(uint8_t* data)
-{
-    memcpy(hmi_storage.SENS_BARO_TEMP, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * @param       data 
- * ************************************************************* **/
-static void id_parser_sens_baro_error(uint8_t* data)
-{
-    memcpy(hmi_storage.SENS_BARO_ERROR, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * @param       data 
- * ************************************************************* **/
-static void id_parser_mntr_bat_seq(uint8_t* data)
-{
-    memcpy(hmi_storage.MNTR_BAT_SEQ, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    /* restart the SEQ software */
+    HAL_GPIO_WritePin(SEQ_RST_GPIO_Port, SEQ_RST_Pin, GPIO_PIN_SET);
     
-    /* battery ok */
-    if(strcmp("ok", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        API_LEDS_SEND_CMD(E_LIST_LED1, E_CMD_LEDS_GREEN);
-    }
-    else
-    /* battery ko */
-    if(strcmp("ko", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        API_LEDS_SEND_CMD(E_LIST_LED1, E_CMD_LEDS_RED);
-    }
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * @param       data 
- * ************************************************************* **/
-static void id_parser_mntr_bat_motor1(uint8_t* data)
-{
-    memcpy(hmi_storage.MNTR_BAT_MOTOR1, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
-    
-    /* battery ok */
-    if(strcmp("ok", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        API_LEDS_SEND_CMD(E_LIST_LED2, E_CMD_LEDS_GREEN);
-    }
-    else
-    /* battery ko */
-    if(strcmp("ko", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        API_LEDS_SEND_CMD(E_LIST_LED2, E_CMD_LEDS_RED);
-    }
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * @param       data 
- * ************************************************************* **/
-static void id_parser_mntr_bat_motor2(uint8_t* data)
-{
-    memcpy(hmi_storage.MNTR_BAT_MOTOR2, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
-
-    /* battery ok */
-    if(strcmp("ok", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        API_LEDS_SEND_CMD(E_LIST_LED3, E_CMD_LEDS_GREEN);
-    }
-    else
-    /* battery ko */
-    if(strcmp("ko", (char*)(data + PAYLOAD_OFFSET)))
-    {
-        API_LEDS_SEND_CMD(E_LIST_LED3, E_CMD_LEDS_RED);
-    }
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * @param       data 
- * ************************************************************* **/
-static void id_parser_recov_last_cmd(uint8_t* data)
-{
-    memcpy(hmi_storage.RECOV_LAST_CMD, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * @param       data 
- * ************************************************************* **/
-static void id_parser_recov_status(uint8_t* data)
-{
-    memcpy(hmi_storage.RECOV_STATUS, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * @param       data 
- * ************************************************************* **/
-static void id_parser_payload_last_cmd(uint8_t* data)
-{
-    memcpy(hmi_storage.PAYLOAD_LAST_CMD, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * @param       data 
- * ************************************************************* **/
-static void id_parser_payload_status(uint8_t* data)
-{
-    memcpy(hmi_storage.PAYLOAD_STATUS, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    /* restart the HMI software */
+	SCB->AIRCR = 0x05fa0004;
 }
 
 /* ============================================================= ==
@@ -676,46 +341,22 @@ void API_HMI_START(void)
 {
     BaseType_t status;
 
-    /* AEROC led */
-    API_LEDS_SEND_CMD(E_LIST_LED5, E_CMD_LEDS_GREEN);
+    leds_init();
+    leds_send_cmd(E_LIST_LED5, E_CMD_LEDS_GREEN);
+
+    uart_init(&parsed_data);
+
+    bouttons_init(&button);
 
     /* oled */ 
     Device_Init();
     Clear_Screen();
     oled.OLED_GUI_MENU = OLED_GUI_START;
-
-    QueueHandle_btn  = xQueueCreate (1, sizeof(ENUM_HMI_BTN_t));
-    QueueHandle_uart = xQueueCreate (32, sizeof(uint8_t*));
+    oled.menu_flag = E_HMI_OLED_MENU_NEW;
 
     /* create the task */
     status = xTaskCreate(handler_oled, "task_oled", configMINIMAL_STACK_SIZE, NULL, TASK_PRIORITY_APP_OLED, &TaskHandle_oled);
     configASSERT(status == pdPASS);
-
-    status = xTaskCreate(handler_btn, "task_btn", configMINIMAL_STACK_SIZE, NULL, TASK_PRIORITY_APP_BTN, &TaskHandle_btn);
-    configASSERT(status == pdPASS);
-
-    status = xTaskCreate(handler_uart, "task_uart", configMINIMAL_STACK_SIZE, NULL, TASK_PRIORITY_APP_BTN, &TaskHandle_btn);
-    configASSERT(status == pdPASS);
-}
-
-/** ************************************************************* *
- * @brief       send a command to the payload task
- * 
- * @param       cmd 
- * ************************************************************* **/
-void API_HMI_BTN_CALLBACK(ENUM_HMI_BTN_t btn)
-{
-    xQueueSend(QueueHandle_btn, &btn, (TickType_t)0);
-}
-
-/** ************************************************************* *
- * @brief       send a command to the payload task
- * 
- * @param       cmd 
- * ************************************************************* **/
-void API_HMI_UART_CALLBACK(uint8_t* data)
-{
-    xQueueSend(QueueHandle_uart, &data, (TickType_t)0);
 }
 
 /* ------------------------------------------------------------- --

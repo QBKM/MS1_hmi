@@ -28,7 +28,6 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-#include "leds.h"
 #include "hmi.h"
 /* USER CODE END Includes */
 
@@ -55,6 +54,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
+uint8_t RxBuffer[16] = {0};
 
 /* USER CODE END PFP */
 
@@ -96,7 +96,7 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 
-  API_LEDS_START();
+  API_HMI_START();
 
   vTaskStartScheduler();
 
@@ -170,25 +170,25 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     {
         case BTN1_Pin :
             //SEGGER_SYSVIEW_RecordEnterISR();
-            API_HMI_BTN_CALLBACK(E_HMI_BTN1);
+            callback_buttons(E_BTN_1);
             //SEGGER_SYSVIEW_RecordExitISR();
             break;
 
         case BTN2_Pin :
             //SEGGER_SYSVIEW_RecordEnterISR();
-            API_HMI_BTN_CALLBACK(E_HMI_BTN2);
+            callback_buttons(E_BTN_2);
             //SEGGER_SYSVIEW_RecordExitISR();
             break;
 
         case BTN3_Pin :
             //SEGGER_SYSVIEW_RecordEnterISR();
-            API_HMI_BTN_CALLBACK(E_HMI_BTN3);
+            callback_buttons(E_BTN_3);
             //SEGGER_SYSVIEW_RecordExitISR();
             break;
 
         case BTN4_Pin :
             //SEGGER_SYSVIEW_RecordEnterISR();
-            API_HMI_BTN_CALLBACK(E_HMI_BTN4);
+            callback_buttons(E_BTN_4);
             //SEGGER_SYSVIEW_RecordExitISR();
             break;
         
@@ -199,10 +199,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-    static uint8_t* RxBuffer = NULL;
 
-    HAL_UART_Receive_DMA(&huart2, RxBuffer, MAX_RX_BUFFER_SIZE);
-    API_HMI_UART_CALLBACK(RxBuffer);
+    HAL_UART_Receive_DMA(&huart2, RxBuffer, FRAME_SIZE);
+    uart_parser_callback(RxBuffer);
 }
 
 /* USER CODE END 4 */

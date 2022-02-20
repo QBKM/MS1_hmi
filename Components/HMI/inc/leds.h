@@ -43,9 +43,8 @@ typedef enum
 /* ------------------------------------------------------------- --
    function propotypes
 -- ------------------------------------------------------------- */
-void API_LEDS_START(void);
-void API_LEDS_SEND_CMD(ENUM_LEDS_LIST_t led, ENUM_LEDS_CMD_t command);
-void API_LEDS_CALLBACK(void);
+void leds_init(void);
+void leds_send_cmd(ENUM_LEDS_LIST_t led, ENUM_LEDS_CMD_t command);
 
 /* ------------------------------------------------------------- --
    end of file

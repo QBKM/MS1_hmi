@@ -5,28 +5,34 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../Components/HMI/buttons.c \
 ../Components/HMI/fonts.c \
 ../Components/HMI/hmi.c \
 ../Components/HMI/leds.c \
 ../Components/HMI/oled_ascii.c \
 ../Components/HMI/oled_driver.c \
-../Components/HMI/oled_gfx.c 
+../Components/HMI/oled_gfx.c \
+../Components/HMI/uart_parser.c 
 
 OBJS += \
+./Components/HMI/buttons.o \
 ./Components/HMI/fonts.o \
 ./Components/HMI/hmi.o \
 ./Components/HMI/leds.o \
 ./Components/HMI/oled_ascii.o \
 ./Components/HMI/oled_driver.o \
-./Components/HMI/oled_gfx.o 
+./Components/HMI/oled_gfx.o \
+./Components/HMI/uart_parser.o 
 
 C_DEPS += \
+./Components/HMI/buttons.d \
 ./Components/HMI/fonts.d \
 ./Components/HMI/hmi.d \
 ./Components/HMI/leds.d \
 ./Components/HMI/oled_ascii.d \
 ./Components/HMI/oled_driver.d \
-./Components/HMI/oled_gfx.d 
+./Components/HMI/oled_gfx.d \
+./Components/HMI/uart_parser.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -36,7 +42,7 @@ Components/HMI/%.o: ../Components/HMI/%.c Components/HMI/subdir.mk
 clean: clean-Components-2f-HMI
 
 clean-Components-2f-HMI:
-	-$(RM) ./Components/HMI/fonts.d ./Components/HMI/fonts.o ./Components/HMI/hmi.d ./Components/HMI/hmi.o ./Components/HMI/leds.d ./Components/HMI/leds.o ./Components/HMI/oled_ascii.d ./Components/HMI/oled_ascii.o ./Components/HMI/oled_driver.d ./Components/HMI/oled_driver.o ./Components/HMI/oled_gfx.d ./Components/HMI/oled_gfx.o
+	-$(RM) ./Components/HMI/buttons.d ./Components/HMI/buttons.o ./Components/HMI/fonts.d ./Components/HMI/fonts.o ./Components/HMI/hmi.d ./Components/HMI/hmi.o ./Components/HMI/leds.d ./Components/HMI/leds.o ./Components/HMI/oled_ascii.d ./Components/HMI/oled_ascii.o ./Components/HMI/oled_driver.d ./Components/HMI/oled_driver.o ./Components/HMI/oled_gfx.d ./Components/HMI/oled_gfx.o ./Components/HMI/uart_parser.d ./Components/HMI/uart_parser.o
 
 .PHONY: clean-Components-2f-HMI
 

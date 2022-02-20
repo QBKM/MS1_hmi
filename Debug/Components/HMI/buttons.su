@@ -1,0 +1,3 @@
+buttons.c:22:13:handler_btn	24	static
+buttons.c:35:6:bouttons_init	32	static,ignoring_inline_asm
+buttons.c:47:6:callback_buttons	16	static

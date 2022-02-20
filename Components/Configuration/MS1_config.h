@@ -24,6 +24,7 @@
 #define TASK_PRIORITY_APP_LEDS   (uint32_t)5     /* Application */
 #define TASK_PRIORITY_APP_OLED   (uint32_t)5     /* Application */
 #define TASK_PRIORITY_APP_BTN    (uint32_t)5     /* Application */
+#define TASK_PRIORITY_APP_UART   (uint32_t)5     /* Application */
 
 
 #endif /* _MS1_CONFIG_H_ */

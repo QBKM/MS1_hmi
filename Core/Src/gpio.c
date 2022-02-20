@@ -55,8 +55,8 @@ void MX_GPIO_Init(void)
                           |RGB3_G_Pin|RGB3_R_Pin|RGB2_B_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, SEQ_RST_Pin|SSD1351_DC_Pin|RGB2_G_Pin|RGB2_R_Pin
-                          |RGB1_B_Pin|RGB1_G_Pin|RGB1_R_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, SEQ_RST_Pin|SSD1351_NSS_Pin|SSD1351_DC_Pin|RGB2_G_Pin
+                          |RGB2_R_Pin|RGB1_B_Pin|RGB1_G_Pin|RGB1_R_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, BTN1_Pin|BTN2_Pin|BTN3_Pin|BTN4_Pin, GPIO_PIN_RESET);
@@ -72,13 +72,11 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PAPin PAPin PAPin PAPin
-                           PAPin PAPin */
-  GPIO_InitStruct.Pin = SEQ_RST_Pin|RGB2_G_Pin|RGB2_R_Pin|RGB1_B_Pin
-                          |RGB1_G_Pin|RGB1_R_Pin;
+  /*Configure GPIO pins : PAPin PAPin */
+  GPIO_InitStruct.Pin = SEQ_RST_Pin|SSD1351_NSS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PtPin */
@@ -94,6 +92,15 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   HAL_GPIO_Init(SSD1351_NRST_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PAPin PAPin PAPin PAPin
+                           PAPin */
+  GPIO_InitStruct.Pin = RGB2_G_Pin|RGB2_R_Pin|RGB1_B_Pin|RGB1_G_Pin
+                          |RGB1_R_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PBPin PBPin PBPin PBPin */
   GPIO_InitStruct.Pin = BTN1_Pin|BTN2_Pin|BTN3_Pin|BTN4_Pin;

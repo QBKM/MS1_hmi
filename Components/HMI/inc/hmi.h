@@ -17,28 +17,23 @@
 #include "stdint.h"
 #include "stdbool.h"
 
+#include "leds.h"
+#include "uart_parser.h"
+#include "buttons.h"
+
 /* ------------------------------------------------------------- --
    defines
 -- ------------------------------------------------------------- */
-#define MAX_RX_BUFFER_SIZE    16
 
 /* ------------------------------------------------------------- --
    types
 -- ------------------------------------------------------------- */
-typedef enum
-{
-    E_HMI_BTN1,
-    E_HMI_BTN2,  
-    E_HMI_BTN3,
-    E_HMI_BTN4
-}ENUM_HMI_BTN_t;
 
 /* ------------------------------------------------------------- --
    function propotypes
 -- ------------------------------------------------------------- */
 void API_HMI_START(void);
-void API_HMI_BTN_CALLBACK(ENUM_HMI_BTN_t btn);
-void API_HMI_UART_CALLBACK(uint8_t* data);
+
 
 /* ------------------------------------------------------------- --
    end of file
