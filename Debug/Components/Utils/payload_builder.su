@@ -1,0 +1,9 @@
+payload_builder.c:10:6:pb_buf	24	static
+payload_builder.c:21:6:pb_string	24	static
+payload_builder.c:33:6:pb_u8	16	static
+payload_builder.c:43:6:pb_u16	16	static
+payload_builder.c:59:6:pb_u32	16	static
+payload_builder.c:79:6:pb_i8	16	static
+payload_builder.c:85:6:pb_i16	16	static
+payload_builder.c:91:6:pb_i32	16	static
+payload_builder.c:97:6:pb_float	16	static

@@ -12,7 +12,11 @@
 #include "string.h"
 #include "stdlib.h"
 
+#include "TinyFrame.h"
+
 STRUCT_UART_STORAGE_t uart_storage = {0};
+
+TinyFrame *TinyFrame_RX;
 
 QueueHandle_t QueueHandle_uart;
 TaskHandle_t TaskHandle_uart;
@@ -20,31 +24,27 @@ TaskHandle_t TaskHandle_uart;
 static void handler_uart(void* parameters);
 
 /* UART id parsing fucntions */
-static void id_parser_app_phase(uint8_t* data);
-static void id_parser_app_window(uint8_t* data);
-static void id_parser_app_aeroc(uint8_t* data);
-
-static void id_parser_sens_imu_ax(uint8_t* data);
-static void id_parser_sens_imu_ay(uint8_t* data);
-static void id_parser_sens_imu_az(uint8_t* data);
-static void id_parser_sens_imu_gx(uint8_t* data);
-static void id_parser_sens_imu_gy(uint8_t* data);
-static void id_parser_sens_imu_gz(uint8_t* data);
-static void id_parser_sens_imu_error(uint8_t* data);
-static void id_parser_sens_imu_temp(uint8_t* data);
-static void id_parser_sens_baro_press(uint8_t* data);
-static void id_parser_sens_baro_temp(uint8_t* data);
-static void id_parser_sens_baro_error(uint8_t* data);
-
-static void id_parser_mntr_bat_seq(uint8_t* data);
-static void id_parser_mntr_bat_motor1(uint8_t* data);
-static void id_parser_mntr_bat_motor2(uint8_t* data);
-
-static void id_parser_recov_last_cmd(uint8_t* data);
-static void id_parser_recov_status(uint8_t* data);
-
-static void id_parser_payload_last_cmd(uint8_t* data);
-static void id_parser_payload_status(uint8_t* data);
+static TF_Result id_parser_app_phase(TinyFrame *tf, TF_Msg *msg);
+static TF_Result id_parser_app_window(TinyFrame *tf, TF_Msg *msg);
+static TF_Result id_parser_app_aeroc(TinyFrame *tf, TF_Msg *msg);
+static TF_Result id_parser_sens_imu_ax(TinyFrame *tf, TF_Msg *msg);
+static TF_Result id_parser_sens_imu_ay(TinyFrame *tf, TF_Msg *msg);
+static TF_Result id_parser_sens_imu_az(TinyFrame *tf, TF_Msg *msg);
+static TF_Result id_parser_sens_imu_gx(TinyFrame *tf, TF_Msg *msg);
+static TF_Result id_parser_sens_imu_gy(TinyFrame *tf, TF_Msg *msg);
+static TF_Result id_parser_sens_imu_gz(TinyFrame *tf, TF_Msg *msg);
+static TF_Result id_parser_sens_imu_error(TinyFrame *tf, TF_Msg *msg);
+static TF_Result id_parser_sens_imu_temp(TinyFrame *tf, TF_Msg *msg);
+static TF_Result id_parser_sens_baro_press(TinyFrame *tf, TF_Msg *msg);
+static TF_Result id_parser_sens_baro_temp(TinyFrame *tf, TF_Msg *msg);
+static TF_Result id_parser_sens_baro_error(TinyFrame *tf, TF_Msg *msg);
+static TF_Result id_parser_mntr_bat_seq(TinyFrame *tf, TF_Msg *msg);
+static TF_Result id_parser_mntr_bat_motor1(TinyFrame *tf, TF_Msg *msg);
+static TF_Result id_parser_mntr_bat_motor2(TinyFrame *tf, TF_Msg *msg);
+static TF_Result id_parser_recov_last_cmd(TinyFrame *tf, TF_Msg *msg);
+static TF_Result id_parser_recov_status(TinyFrame *tf, TF_Msg *msg);
+static TF_Result id_parser_payload_last_cmd(TinyFrame *tf, TF_Msg *msg);
+static TF_Result id_parser_payload_status(TinyFrame *tf, TF_Msg *msg);
 
 /** ************************************************************* *
  * @brief       
@@ -54,74 +54,60 @@ static void id_parser_payload_status(uint8_t* data);
 void handler_uart(void* parameters)
 {
     uint8_t frame[FRAME_SIZE] = {0};
-    uint8_t buffID[ID_SIZE+1] = {0};
-    uint8_t id = 0;
 
     while(1)
     {
-        if(xQueueReceive(QueueHandle_uart, &frame, portMAX_DELAY))
+        if(xQueueReceive(QueueHandle_uart, &frame, portMAX_DELAY) == pdTRUE)
         {
-            if(frame[0] == '[' && frame[3] == ']')
-            {
-                // parsing 
-	            memcpy(buffID, (char*)(frame + ID_OFFSET), ID_SIZE);
-	            buffID[2] = '\0';
-	            id = atoi((char*)buffID);
-
-                /* process the payload with the associated ID */
-                switch (id)
-                {
-                    /* none */
-                    case HMI_ID_NONE:                                                    break;
-
-                    /* application data */
-                    case HMI_ID_APP_PHASE:          id_parser_app_phase(frame);          break; 
-                    case HMI_ID_APP_WINDOW:         id_parser_app_window(frame);         break; 
-                    case HMI_ID_APP_AEROC:          id_parser_app_aeroc(frame);          break;   
-                    
-                    /* sensors data */
-                    case HMI_ID_SENS_IMU_AX:        id_parser_sens_imu_ax(frame);        break; 
-                    case HMI_ID_SENS_IMU_AY:        id_parser_sens_imu_ay(frame);        break;   
-                    case HMI_ID_SENS_IMU_AZ:        id_parser_sens_imu_az(frame);        break;    
-                    case HMI_ID_SENS_IMU_GX:        id_parser_sens_imu_gx(frame);        break; 
-                    case HMI_ID_SENS_IMU_GY:        id_parser_sens_imu_gy(frame);        break;   
-                    case HMI_ID_SENS_IMU_GZ:        id_parser_sens_imu_gz(frame);        break;
-                    case HMI_ID_SENS_IMU_TEMP:      id_parser_sens_imu_temp(frame);      break;
-                    case HMI_ID_SENS_IMU_ERROR:     id_parser_sens_imu_error(frame);     break;
-                    case HMI_ID_SENS_BARO_PRESS:    id_parser_sens_baro_press(frame);    break;
-                    case HMI_ID_SENS_BARO_TEMP:     id_parser_sens_baro_temp(frame);     break;
-                    case HMI_ID_SENS_BARO_ERROR:    id_parser_sens_baro_error(frame);    break;
-                    
-                    /* monitoring data */
-                    case HMI_ID_MNTR_BAT_SEQ:       id_parser_mntr_bat_seq(frame);       break;
-                    case HMI_ID_MNTR_BAT_MOTOR1:    id_parser_mntr_bat_motor1(frame);    break;
-                    case HMI_ID_MNTR_BAT_MOTOR2:    id_parser_mntr_bat_motor2(frame);    break;
-                    
-                    /* recovery data */
-                    case HMI_ID_RECOV_LAST_CMD:     id_parser_recov_last_cmd(frame);     break;
-                    case HMI_ID_RECOV_STATUS:       id_parser_recov_status(frame);       break;
-                    
-                    /* payload data */
-                    case HMI_ID_PAYLOAD_LAST_CMD:   id_parser_payload_last_cmd(frame);   break; 
-                    case HMI_ID_PAYLOAD_STATUS:     id_parser_payload_status(frame);     break;
-
-                    default:                                                             break;
-
-                }
-            }
+            TF_Accept(TinyFrame_RX, frame, FRAME_SIZE);
         }
     }
+}
+
+/** ************************************************************* *
+ * @brief       This function should be defined in the 
+ *              application code. It implements the lowest 
+ *              layer - sending bytes to UART (or other)
+ * 
+ * @param       tf 
+ * @param       buff 
+ * @param       len 
+ * ************************************************************* **/
+void TF_WriteImpl(TinyFrame *tf, const uint8_t *buff, uint32_t len)
+{
+    // only used for TX
 }
 
 /** ************************************************************* *
  * @brief       
  * 
  * ************************************************************* **/
-void uart_init(STRUCT_UART_STORAGE_t* parsed_data)
+void uart_init(void)
 {
     BaseType_t status;
 
-    parsed_data = &uart_storage;
+    /* subscribe for all message id */
+    TF_AddTypeListener(TinyFrame_RX, HMI_ID_APP_PHASE, id_parser_app_phase);
+    TF_AddTypeListener(TinyFrame_RX, HMI_ID_APP_WINDOW, id_parser_app_window);
+    TF_AddTypeListener(TinyFrame_RX, HMI_ID_APP_AEROC, id_parser_app_aeroc);
+    TF_AddTypeListener(TinyFrame_RX, HMI_ID_SENS_IMU_AX, id_parser_sens_imu_ax);
+    TF_AddTypeListener(TinyFrame_RX, HMI_ID_SENS_IMU_AY, id_parser_sens_imu_ay);
+    TF_AddTypeListener(TinyFrame_RX, HMI_ID_SENS_IMU_AZ, id_parser_sens_imu_az);
+    TF_AddTypeListener(TinyFrame_RX, HMI_ID_SENS_IMU_GX, id_parser_sens_imu_gx);
+    TF_AddTypeListener(TinyFrame_RX, HMI_ID_SENS_IMU_GY, id_parser_sens_imu_gy);
+    TF_AddTypeListener(TinyFrame_RX, HMI_ID_SENS_IMU_GZ, id_parser_sens_imu_gz);
+    TF_AddTypeListener(TinyFrame_RX, HMI_ID_SENS_IMU_ERROR, id_parser_sens_imu_error);
+    TF_AddTypeListener(TinyFrame_RX, HMI_ID_SENS_IMU_TEMP, id_parser_sens_imu_temp);
+    TF_AddTypeListener(TinyFrame_RX, HMI_ID_SENS_BARO_PRESS, id_parser_sens_baro_press);
+    TF_AddTypeListener(TinyFrame_RX, HMI_ID_SENS_BARO_TEMP, id_parser_sens_baro_temp);
+    TF_AddTypeListener(TinyFrame_RX, HMI_ID_SENS_BARO_ERROR, id_parser_sens_baro_error);
+    TF_AddTypeListener(TinyFrame_RX, HMI_ID_MNTR_BAT_SEQ, id_parser_mntr_bat_seq);
+    TF_AddTypeListener(TinyFrame_RX, HMI_ID_MNTR_BAT_MOTOR1, id_parser_mntr_bat_motor1);
+    TF_AddTypeListener(TinyFrame_RX, HMI_ID_MNTR_BAT_MOTOR2, id_parser_mntr_bat_motor2);
+    TF_AddTypeListener(TinyFrame_RX, HMI_ID_RECOV_LAST_CMD, id_parser_recov_last_cmd);
+    TF_AddTypeListener(TinyFrame_RX, HMI_ID_RECOV_STATUS, id_parser_recov_status);
+    TF_AddTypeListener(TinyFrame_RX, HMI_ID_PAYLOAD_LAST_CMD, id_parser_payload_last_cmd);
+    TF_AddTypeListener(TinyFrame_RX, HMI_ID_PAYLOAD_STATUS, id_parser_payload_status);
 
     QueueHandle_uart = xQueueCreate (32, sizeof(uint8_t*));
     status = xTaskCreate(handler_uart, "task_uart", configMINIMAL_STACK_SIZE, NULL, TASK_PRIORITY_APP_UART, &TaskHandle_uart);
@@ -133,38 +119,39 @@ void uart_init(STRUCT_UART_STORAGE_t* parsed_data)
  * 
  * @param       cmd 
  * ************************************************************* **/
-void uart_parser_callback(uint8_t* data)
+void uart_parser_callback(uint8_t* frame)
 {
-    xQueueSend(QueueHandle_uart, &data, (TickType_t)0);
+    xQueueSendFromISR(QueueHandle_uart, &frame, pdFALSE);
 }
-
 
 /** ************************************************************* *
  * @brief       
  * 
  * @param       data 
  * ************************************************************* **/
-static void id_parser_app_phase(uint8_t* data)
+static TF_Result id_parser_app_phase(TinyFrame *tf, TF_Msg *msg)
 {
-    memcpy(uart_storage.APP_PHASE, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    memcpy(uart_storage.APP.PHASE, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
 
     /* phase wait */
-    if(!strcmp("wait", (char*)(data + PAYLOAD_OFFSET)))
+    if(!strcmp("wait", (char*)(tf->data)))
     {
         leds_send_cmd(E_LIST_LED4, E_CMD_LEDS_GREEN);
     }
     else
     /* phase ascend */
-    if(!strcmp("ascend", (char*)(data + PAYLOAD_OFFSET)))
+    if(!strcmp("ascend", (char*)(tf->data)))
     {
         leds_send_cmd(E_LIST_LED4, E_CMD_LEDS_RED);
     }
     else
     /* phase descend */
-    if(!strcmp("descend", (char*)(data + PAYLOAD_OFFSET)))
+    if(!strcmp("descend", (char*)(tf->data)))
     {
         leds_send_cmd(E_LIST_LED4, E_CMD_LEDS_NONE);
     }
+
+    return TF_STAY;
 }
 
 /** ************************************************************* *
@@ -172,21 +159,23 @@ static void id_parser_app_phase(uint8_t* data)
  * 
  * @param       data 
  * ************************************************************* **/
-static void id_parser_app_window(uint8_t* data)
+static TF_Result id_parser_app_window(TinyFrame *tf, TF_Msg *msg)
 {
+    memcpy(uart_storage.APP.WINDOW, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
+
     /* window in */
-    if(!strcmp("in", (char*)(data + PAYLOAD_OFFSET)))
+    if(!strcmp("in", (char*)(tf->data)))
     {
-        memcpy(uart_storage.APP_WINDOW, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
         leds_send_cmd(E_LIST_LED4, E_CMD_LEDS_BLUE);
     }
     else
     /* window out */
-    if(!strcmp("out", (char*)(data + PAYLOAD_OFFSET)))
+    if(!strcmp("out", (char*)(tf->data)))
     {
-        memcpy(uart_storage.APP_WINDOW, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
         leds_send_cmd(E_LIST_LED4, E_CMD_LEDS_NONE);
     }
+
+    return TF_STAY;
 }
 
 /** ************************************************************* *
@@ -194,10 +183,11 @@ static void id_parser_app_window(uint8_t* data)
  * 
  * @param       data 
  * ************************************************************* **/
-static void id_parser_app_aeroc(uint8_t* data)
+static TF_Result id_parser_app_aeroc(TinyFrame *tf, TF_Msg *msg)
 {
-    memcpy(uart_storage.APP_AEROC, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    memcpy(uart_storage.APP.AEROC, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
     leds_send_cmd(E_LIST_LED5, E_CMD_LEDS_RED);
+    return TF_STAY;
 }
 
 /** ************************************************************* *
@@ -205,9 +195,10 @@ static void id_parser_app_aeroc(uint8_t* data)
  * 
  * @param       data 
  * ************************************************************* **/
-static void id_parser_sens_imu_ax(uint8_t* data)
+static TF_Result id_parser_sens_imu_ax(TinyFrame *tf, TF_Msg *msg)
 {
-    memcpy(uart_storage.SENS_IMU_AX, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    memcpy(uart_storage.SENSOR.IMU_AX, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
+    return TF_STAY;
 }
 
 /** ************************************************************* *
@@ -215,9 +206,10 @@ static void id_parser_sens_imu_ax(uint8_t* data)
  * 
  * @param       data 
  * ************************************************************* **/
-static void id_parser_sens_imu_ay(uint8_t* data)
+static TF_Result id_parser_sens_imu_ay(TinyFrame *tf, TF_Msg *msg)
 {
-    memcpy(uart_storage.SENS_IMU_AY, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    memcpy(uart_storage.SENSOR.IMU_AY, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
+    return TF_STAY;
 }
 
 /** ************************************************************* *
@@ -225,9 +217,10 @@ static void id_parser_sens_imu_ay(uint8_t* data)
  * 
  * @param       data 
  * ************************************************************* **/
-static void id_parser_sens_imu_az(uint8_t* data)
+static TF_Result id_parser_sens_imu_az(TinyFrame *tf, TF_Msg *msg)
 {
-    memcpy(uart_storage.SENS_IMU_AZ, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    memcpy(uart_storage.SENSOR.IMU_AZ, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
+    return TF_STAY;
 }
 
 /** ************************************************************* *
@@ -235,9 +228,10 @@ static void id_parser_sens_imu_az(uint8_t* data)
  * 
  * @param       data 
  * ************************************************************* **/
-static void id_parser_sens_imu_gx(uint8_t* data)
+static TF_Result id_parser_sens_imu_gx(TinyFrame *tf, TF_Msg *msg)
 {
-    memcpy(uart_storage.SENS_IMU_GX, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    memcpy(uart_storage.SENSOR.IMU_GX, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
+    return TF_STAY;
 }
 
 /** ************************************************************* *
@@ -245,9 +239,10 @@ static void id_parser_sens_imu_gx(uint8_t* data)
  * 
  * @param       data 
  * ************************************************************* **/
-static void id_parser_sens_imu_gy(uint8_t* data)
+static TF_Result id_parser_sens_imu_gy(TinyFrame *tf, TF_Msg *msg)
 {
-    memcpy(uart_storage.SENS_IMU_GY, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    memcpy(uart_storage.SENSOR.IMU_GY, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
+    return TF_STAY;
 }
 
 /** ************************************************************* *
@@ -255,9 +250,10 @@ static void id_parser_sens_imu_gy(uint8_t* data)
  * 
  * @param       data 
  * ************************************************************* **/
-static void id_parser_sens_imu_gz(uint8_t* data)
+static TF_Result id_parser_sens_imu_gz(TinyFrame *tf, TF_Msg *msg)
 {
-    memcpy(uart_storage.SENS_IMU_GZ, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    memcpy(uart_storage.SENSOR.IMU_GZ, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
+    return TF_STAY;
 }
 
 /** ************************************************************* *
@@ -265,9 +261,10 @@ static void id_parser_sens_imu_gz(uint8_t* data)
  * 
  * @param       data 
  * ************************************************************* **/
-static void id_parser_sens_imu_temp(uint8_t* data)
+static TF_Result id_parser_sens_imu_temp(TinyFrame *tf, TF_Msg *msg)
 {
-    memcpy(uart_storage.SENS_IMU_TEMP, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    memcpy(uart_storage.SENSOR.IMU_TEMP, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
+    return TF_STAY;
 }
 
 /** ************************************************************* *
@@ -275,9 +272,10 @@ static void id_parser_sens_imu_temp(uint8_t* data)
  * 
  * @param       data 
  * ************************************************************* **/
-static void id_parser_sens_imu_error(uint8_t* data)
+static TF_Result id_parser_sens_imu_error(TinyFrame *tf, TF_Msg *msg)
 {
-    memcpy(uart_storage.SENS_IMU_ERROR, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    memcpy(uart_storage.ERROR.IMU, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
+    return TF_STAY;
 }
 
 /** ************************************************************* *
@@ -285,9 +283,10 @@ static void id_parser_sens_imu_error(uint8_t* data)
  * 
  * @param       data 
  * ************************************************************* **/
-static void id_parser_sens_baro_press(uint8_t* data)
+static TF_Result id_parser_sens_baro_press(TinyFrame *tf, TF_Msg *msg)
 {
-    memcpy(uart_storage.SENS_BARO_PRESS, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    memcpy(uart_storage.SENSOR.BARO_PRESS, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
+    return TF_STAY;
 }
 
 /** ************************************************************* *
@@ -295,9 +294,10 @@ static void id_parser_sens_baro_press(uint8_t* data)
  * 
  * @param       data 
  * ************************************************************* **/
-static void id_parser_sens_baro_temp(uint8_t* data)
+static TF_Result id_parser_sens_baro_temp(TinyFrame *tf, TF_Msg *msg)
 {
-    memcpy(uart_storage.SENS_BARO_TEMP, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    memcpy(uart_storage.SENSOR.BARO_TEMP, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
+    return TF_STAY;
 }
 
 /** ************************************************************* *
@@ -305,9 +305,10 @@ static void id_parser_sens_baro_temp(uint8_t* data)
  * 
  * @param       data 
  * ************************************************************* **/
-static void id_parser_sens_baro_error(uint8_t* data)
+static TF_Result id_parser_sens_baro_error(TinyFrame *tf, TF_Msg *msg)
 {
-    memcpy(uart_storage.SENS_BARO_ERROR, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    memcpy(uart_storage.ERROR.BARO, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
+    return TF_STAY;
 }
 
 /** ************************************************************* *
@@ -315,21 +316,23 @@ static void id_parser_sens_baro_error(uint8_t* data)
  * 
  * @param       data 
  * ************************************************************* **/
-static void id_parser_mntr_bat_seq(uint8_t* data)
+static TF_Result id_parser_mntr_bat_seq(TinyFrame *tf, TF_Msg *msg)
 {
-    memcpy(uart_storage.MNTR_BAT_SEQ, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    memcpy(uart_storage.MNTR.BAT_SEQ, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
     
     /* battery ok */
-    if(!strcmp("ok", (char*)(data + PAYLOAD_OFFSET)))
+    if(!strcmp("ok", (char*)(tf->data)))
     {
         leds_send_cmd(E_LIST_LED1, E_CMD_LEDS_GREEN);
     }
     else
     /* battery ko */
-    if(!strcmp("ko", (char*)(data + PAYLOAD_OFFSET)))
+    if(!strcmp("ko", (char*)(tf->data)))
     {
         leds_send_cmd(E_LIST_LED1, E_CMD_LEDS_RED);
     }
+
+    return TF_STAY;
 }
 
 /** ************************************************************* *
@@ -337,21 +340,23 @@ static void id_parser_mntr_bat_seq(uint8_t* data)
  * 
  * @param       data 
  * ************************************************************* **/
-static void id_parser_mntr_bat_motor1(uint8_t* data)
+static TF_Result id_parser_mntr_bat_motor1(TinyFrame *tf, TF_Msg *msg)
 {
-    memcpy(uart_storage.MNTR_BAT_MOTOR1, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    memcpy(uart_storage.MNTR.BAT_MOTOR1, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
     
     /* battery ok */
-    if(!strcmp("ok", (char*)(data + PAYLOAD_OFFSET)))
+    if(!strcmp("ok", (char*)(tf->data)))
     {
         leds_send_cmd(E_LIST_LED2, E_CMD_LEDS_GREEN);
     }
     else
     /* battery ko */
-    if(!strcmp("ko", (char*)(data + PAYLOAD_OFFSET)))
+    if(!strcmp("ko", (char*)(tf->data)))
     {
         leds_send_cmd(E_LIST_LED2, E_CMD_LEDS_RED);
     }
+
+    return TF_STAY;
 }
 
 /** ************************************************************* *
@@ -359,21 +364,23 @@ static void id_parser_mntr_bat_motor1(uint8_t* data)
  * 
  * @param       data 
  * ************************************************************* **/
-static void id_parser_mntr_bat_motor2(uint8_t* data)
+static TF_Result id_parser_mntr_bat_motor2(TinyFrame *tf, TF_Msg *msg)
 {
-    memcpy(uart_storage.MNTR_BAT_MOTOR2, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    memcpy(uart_storage.MNTR.BAT_MOTOR2, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
 
     /* battery ok */
-    if(!strcmp("ok", (char*)(data + PAYLOAD_OFFSET)))
+    if(!strcmp("ok", (char*)(tf->data)))
     {
         leds_send_cmd(E_LIST_LED3, E_CMD_LEDS_GREEN);
     }
     else
     /* battery ko */
-    if(!strcmp("ko", (char*)(data + PAYLOAD_OFFSET)))
+    if(!strcmp("ko", (char*)(tf->data)))
     {
         leds_send_cmd(E_LIST_LED3, E_CMD_LEDS_RED);
     }
+
+    return TF_STAY;
 }
 
 /** ************************************************************* *
@@ -381,9 +388,10 @@ static void id_parser_mntr_bat_motor2(uint8_t* data)
  * 
  * @param       data 
  * ************************************************************* **/
-static void id_parser_recov_last_cmd(uint8_t* data)
+static TF_Result id_parser_recov_last_cmd(TinyFrame *tf, TF_Msg *msg)
 {
-    memcpy(uart_storage.RECOV_LAST_CMD, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    memcpy(uart_storage.RECOVERY.LAST_CMD, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
+    return TF_STAY;
 }
 
 /** ************************************************************* *
@@ -391,9 +399,10 @@ static void id_parser_recov_last_cmd(uint8_t* data)
  * 
  * @param       data 
  * ************************************************************* **/
-static void id_parser_recov_status(uint8_t* data)
+static TF_Result id_parser_recov_status(TinyFrame *tf, TF_Msg *msg)
 {
-    memcpy(uart_storage.RECOV_STATUS, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    memcpy(uart_storage.RECOVERY.STATUS, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
+    return TF_STAY;
 }
 
 /** ************************************************************* *
@@ -401,9 +410,10 @@ static void id_parser_recov_status(uint8_t* data)
  * 
  * @param       data 
  * ************************************************************* **/
-static void id_parser_payload_last_cmd(uint8_t* data)
+static TF_Result id_parser_payload_last_cmd(TinyFrame *tf, TF_Msg *msg)
 {
-    memcpy(uart_storage.PAYLOAD_LAST_CMD, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    memcpy(uart_storage.PAYLOAD.LAST_CMD, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
+    return TF_STAY;
 }
 
 /** ************************************************************* *
@@ -411,12 +421,18 @@ static void id_parser_payload_last_cmd(uint8_t* data)
  * 
  * @param       data 
  * ************************************************************* **/
-static void id_parser_payload_status(uint8_t* data)
+static TF_Result id_parser_payload_status(TinyFrame *tf, TF_Msg *msg)
 {
-    memcpy(uart_storage.PAYLOAD_STATUS, (char*)(data + PAYLOAD_OFFSET), sizeof(PAYLOAD_SIZE));
+    memcpy(uart_storage.PAYLOAD.STATUS, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
+    return TF_STAY;
 }
 
-STRUCT_UART_STORAGE_t* uart_storage_attach(void)
+/** ************************************************************* *
+ * @brief       
+ * 
+ * @return      STRUCT_UART_STORAGE_t* 
+ * ************************************************************* **/
+void uart_storage_attach(STRUCT_UART_STORAGE_t* storage)
 {
-    return &uart_storage;
+   storage = &uart_storage;
 }

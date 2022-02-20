@@ -1,0 +1,11 @@
+payload_parser.c:8:6:pp_skip	16	static
+payload_parser.c:13:9:pp_u8	16	static
+payload_parser.c:21:10:pp_u16	24	static
+payload_parser.c:38:10:pp_u32	24	static
+payload_parser.c:59:16:pp_tail	24	static
+payload_parser.c:75:8:pp_i8	16	static
+payload_parser.c:81:9:pp_i16	16	static
+payload_parser.c:87:9:pp_i32	16	static
+payload_parser.c:93:7:pp_float	16	static
+payload_parser.c:99:10:pp_string	32	static
+payload_parser.c:113:10:pp_buf	32	static

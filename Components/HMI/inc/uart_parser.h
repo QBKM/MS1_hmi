@@ -15,45 +15,69 @@
 #include "uart_list.h"
 #include "freertos.h"
 
-#define  FRAME_SIZE      16
-#define ID_SIZE         2
-#define PAYLOAD_SIZE    (FRAME_SIZE - ID_SIZE)
-
-#define ID_OFFSET       1
-#define PAYLOAD_OFFSET  4
+#define FRAME_SIZE      25
+#define PAYLOAD_SIZE    16
 
 typedef struct
 {
-    uint8_t APP_PHASE[PAYLOAD_SIZE];
-    uint8_t APP_AEROC[PAYLOAD_SIZE];
-    uint8_t APP_WINDOW[PAYLOAD_SIZE];
-    uint8_t APP_RECOV_APOGEE[PAYLOAD_SIZE];
+    uint8_t PHASE[PAYLOAD_SIZE];
+    uint8_t AEROC[PAYLOAD_SIZE];
+    uint8_t WINDOW[PAYLOAD_SIZE];
+    uint8_t APOGEE[PAYLOAD_SIZE];
+}STRUCT_UART_APP_t;
 
-    uint8_t SENS_IMU_AX[PAYLOAD_SIZE];
-    uint8_t SENS_IMU_AY[PAYLOAD_SIZE];
-    uint8_t SENS_IMU_AZ[PAYLOAD_SIZE];
-    uint8_t SENS_IMU_GX[PAYLOAD_SIZE];
-    uint8_t SENS_IMU_GY[PAYLOAD_SIZE];
-    uint8_t SENS_IMU_GZ[PAYLOAD_SIZE];
-    uint8_t SENS_IMU_TEMP[PAYLOAD_SIZE];
-    uint8_t SENS_IMU_ERROR[PAYLOAD_SIZE];
-    uint8_t SENS_BARO_PRESS[PAYLOAD_SIZE];
-    uint8_t SENS_BARO_TEMP[PAYLOAD_SIZE];
-    uint8_t SENS_BARO_ERROR[PAYLOAD_SIZE];
+typedef struct
+{
+    uint8_t IMU_AX[PAYLOAD_SIZE];
+    uint8_t IMU_AY[PAYLOAD_SIZE];
+    uint8_t IMU_AZ[PAYLOAD_SIZE];
+    uint8_t IMU_GX[PAYLOAD_SIZE];
+    uint8_t IMU_GY[PAYLOAD_SIZE];
+    uint8_t IMU_GZ[PAYLOAD_SIZE];
+    uint8_t IMU_TEMP[PAYLOAD_SIZE];
+    uint8_t BARO_PRESS[PAYLOAD_SIZE];
+    uint8_t BARO_TEMP[PAYLOAD_SIZE];
+}STRUCT_UART_SENSOR_t;
 
-    uint8_t MNTR_BAT_SEQ[PAYLOAD_SIZE];
-    uint8_t MNTR_BAT_MOTOR1[PAYLOAD_SIZE];
-    uint8_t MNTR_BAT_MOTOR2[PAYLOAD_SIZE];
+typedef struct
+{
+    uint8_t BAT_SEQ[PAYLOAD_SIZE];
+    uint8_t BAT_MOTOR1[PAYLOAD_SIZE];
+    uint8_t BAT_MOTOR2[PAYLOAD_SIZE];
+}STRUCT_UART_MNTR_t;
 
-    uint8_t RECOV_LAST_CMD[PAYLOAD_SIZE];
-    uint8_t RECOV_STATUS[PAYLOAD_SIZE];
+typedef struct
+{
+    uint8_t LAST_CMD[PAYLOAD_SIZE];
+    uint8_t STATUS[PAYLOAD_SIZE];
+}STRUCT_UART_RECOVERY_t;
 
-    uint8_t PAYLOAD_LAST_CMD[PAYLOAD_SIZE];
-    uint8_t PAYLOAD_STATUS[PAYLOAD_SIZE];
+typedef struct
+{
+    uint8_t LAST_CMD[PAYLOAD_SIZE];
+    uint8_t STATUS[PAYLOAD_SIZE];
+}STRUCT_UART_PAYLOAD_t;
+
+typedef struct
+{
+    uint8_t IMU[PAYLOAD_SIZE];
+    uint8_t BARO[PAYLOAD_SIZE];
+}STRUCT_UART_ERROR_t;
+
+
+typedef struct
+{
+    STRUCT_UART_APP_t       APP;
+    STRUCT_UART_SENSOR_t    SENSOR;
+    STRUCT_UART_MNTR_t      MNTR;
+    STRUCT_UART_RECOVERY_t  RECOVERY;
+    STRUCT_UART_PAYLOAD_t   PAYLOAD;
+    STRUCT_UART_ERROR_t     ERROR;
 }STRUCT_UART_STORAGE_t;
 
-void uart_init(STRUCT_UART_STORAGE_t* parsed_data);
-void uart_parser_callback(uint8_t* data);
-STRUCT_UART_STORAGE_t* uart_storage_attach(void);
+
+void uart_init(void);
+void uart_parser_callback(uint8_t* frame);
+void uart_storage_attach(STRUCT_UART_STORAGE_t* storage);
 
 #endif

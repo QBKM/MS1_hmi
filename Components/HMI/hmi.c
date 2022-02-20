@@ -45,9 +45,9 @@
 #define OLED_MENU_LINE_3		32
 #define OLED_MENU_LINE_4		40
 #define OLED_MENU_LINE_5		48
-
-
-
+#define OLED_MENU_LINE_6		56
+#define OLED_MENU_LINE_7		64
+#define OLED_MENU_LINE_8		72
 
 #define OLED_BTN_NONE       E_BTN_NONE
 #define OLED_BTN_UP         E_BTN_1
@@ -93,18 +93,26 @@ typedef struct
    handles
 -- ------------------------------------------------------------- */
 TaskHandle_t TaskHandle_oled;
+QueueHandle_t QueueHandle_btn;
 
 /* ------------------------------------------------------------- --
    variables
 -- ------------------------------------------------------------- */
 ENUM_BTN_LIST_t button = OLED_BTN_NONE;
-STRUCT_UART_STORAGE_t parsed_data = {0};
+
+STRUCT_UART_STORAGE_t* uart_data = NULL;
 STRUCT_HMI_OLED_t oled = {0};
 
 /* ------------------------------------------------------------- --
    prototypes
 -- ------------------------------------------------------------- */
 static void handler_oled(void* parameters);
+
+/* btn GUI */
+static void OLED_GUI_BTN_UP(void);
+static void OLED_GUI_BTN_DOWN(void);
+static void OLED_GUI_BTN_OK(void);
+static void OLED_GUI_BTN_RETURN(void);
 
 /* menu GUI */
 static void OLED_GUI_START(void);
@@ -134,46 +142,66 @@ static void handler_oled(void* parameters)
 
     while(1)
     {
-        if(oled.OLED_GUI_MENU == OLED_GUI_MAIN)
-        {
-            switch (button)
-            {
-                case OLED_BTN_UP:      oled.line_pointer = (oled.line_pointer >= oled.max_pointer) ? oled.max_pointer : oled.line_pointer +1; break;
-                case OLED_BTN_DOWN:    oled.line_pointer = (oled.line_pointer <= oled.min_pointer) ? oled.min_pointer : oled.line_pointer -1; break;
-                case OLED_BTN_OK:
-                    switch (oled.line_pointer)
-                    {
-                        case E_HMI_OLED_LINE_0: break;
-                        case E_HMI_OLED_LINE_1: oled.OLED_GUI_MENU = OLED_GUI_MONITORING;    break;
-                        case E_HMI_OLED_LINE_2: oled.OLED_GUI_MENU = OLED_GUI_STATUS;        break;
-                        case E_HMI_OLED_LINE_3: oled.OLED_GUI_MENU = OLED_GUI_DATA;          break;
-                        case E_HMI_OLED_LINE_4: break;
-                        case E_HMI_OLED_LINE_5: break;
-                        case E_HMI_OLED_LINE_6: break;
-                        case E_HMI_OLED_LINE_7: break;
-                        case E_HMI_OLED_LINE_8: break;
-                        case E_HMI_OLED_LINE_9: break;
-                        default:                break;
-                    }
-                    break;
-
-                case OLED_BTN_RETURN:
-                default: break;
-            }
-            button = E_BTN_NONE;
-        }
-        else if(button == OLED_BTN_RETURN)
-        {
-            oled.OLED_GUI_MENU = OLED_GUI_MAIN;
-            oled.menu_flag = E_HMI_OLED_MENU_NEW;
-            button = E_BTN_NONE;
-        }
+        /* check and update btn */
+        xQueueReceive(QueueHandle_btn, &button, 0);
 
         /* refresh the page */
         oled.OLED_GUI_MENU(); 
 
+        /* define the refresh rate of the screen */
         vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(OLED_DEFAULT_PERIOD_TASK));
     }
+}
+
+/** ************************************************************* *
+ * @brief       
+ * 
+ * ************************************************************* **/
+static void OLED_GUI_BTN_UP(void)
+{
+    oled.line_pointer = (oled.line_pointer >= oled.max_pointer) ? oled.max_pointer : oled.line_pointer +1;
+}
+
+/** ************************************************************* *
+ * @brief       
+ * 
+ * ************************************************************* **/
+static void OLED_GUI_BTN_DOWN(void)
+{
+    oled.line_pointer = (oled.line_pointer <= oled.min_pointer) ? oled.min_pointer : oled.line_pointer -1;
+}
+
+/** ************************************************************* *
+ * @brief       
+ * 
+ * ************************************************************* **/
+static void OLED_GUI_BTN_OK(void)
+{
+    switch (oled.line_pointer)
+    {
+        case E_HMI_OLED_LINE_0: break;
+        case E_HMI_OLED_LINE_1: oled.OLED_GUI_MENU = OLED_GUI_MONITORING; break;
+        case E_HMI_OLED_LINE_2: oled.OLED_GUI_MENU = OLED_GUI_STATUS; break;
+        case E_HMI_OLED_LINE_3: oled.OLED_GUI_MENU = OLED_GUI_DATA; break;
+        case E_HMI_OLED_LINE_4: oled.OLED_GUI_MENU = OLED_GUI_SLEEP; break;
+        case E_HMI_OLED_LINE_5: oled.OLED_GUI_MENU = OLED_GUI_RESET; break;
+        case E_HMI_OLED_LINE_6: break;
+        case E_HMI_OLED_LINE_7: break;
+        case E_HMI_OLED_LINE_8: break;
+        case E_HMI_OLED_LINE_9: break;
+        default: break;
+    }
+}
+
+/** ************************************************************* *
+ * @brief       
+ * 
+ * ************************************************************* **/
+static void OLED_GUI_BTN_RETURN(void)
+{
+    oled.OLED_GUI_MENU = OLED_GUI_MAIN;
+    oled.menu_flag = E_HMI_OLED_MENU_NEW;
+    button = E_BTN_NONE;
 }
 
 /** ************************************************************* *
@@ -198,7 +226,7 @@ static void OLED_GUI_START(void)
 
     /* print the image */
     /* wait for seq */
-    if(!strcmp((char*)parsed_data.APP_PHASE, "wait"))
+    if(!strcmp((char*)uart_data->APP.PHASE, "wait"))
     {
         oled.OLED_GUI_MENU = OLED_GUI_MAIN;
         oled.menu_flag = E_HMI_OLED_MENU_NEW;
@@ -224,19 +252,32 @@ static void OLED_GUI_MAIN(void)
         Clear_Screen();
         Set_Color(WHITE);
         print_String(0, 0, (const uint8_t*)"===== MAIN MENU =====", FONT_5X8);
-        print_String(10, 15, (const uint8_t*)"Monitoring", FONT_5X8);
-        print_String(10, 23, (const uint8_t*)"Status", FONT_5X8);
-        print_String(10, 31, (const uint8_t*)"Data", FONT_5X8);
-        print_String(10, 39, (const uint8_t*)"Sleep", FONT_5X8);
-        print_String(10, 47, (const uint8_t*)"Reset all", FONT_5X8);
-        print_String(0, OLED_MENU_LINE_1, (const uint8_t*)">", FONT_5X8);
+        print_String(10, OLED_MENU_LINE_1, (const uint8_t*)"Monitoring", FONT_5X8);
+        print_String(10, OLED_MENU_LINE_2, (const uint8_t*)"Status", FONT_5X8);
+        print_String(10, OLED_MENU_LINE_3, (const uint8_t*)"Data", FONT_5X8);
+        print_String(10, OLED_MENU_LINE_4, (const uint8_t*)"Sleep", FONT_5X8);
+        print_String(10, OLED_MENU_LINE_5, (const uint8_t*)"Reset all", FONT_5X8);
+        print_String(0,  OLED_MENU_LINE_1, (const uint8_t*)">", FONT_5X8);
     }
 
+    /* btn managment */
+    switch (button)
+    {
+        case OLED_BTN_UP:       OLED_GUI_BTN_UP(); break;
+        case OLED_BTN_DOWN:     OLED_GUI_BTN_DOWN(); break;
+        case OLED_BTN_OK:       OLED_GUI_BTN_OK(); break;
+        case OLED_BTN_RETURN:   OLED_GUI_BTN_RETURN(); break;
+        default: break;
+    }
+
+    button = E_BTN_NONE;
+
+    /* pointer management */
     if(last_pointer != oled.line_pointer)
     {
     	last_pointer = oled.line_pointer;
     	Set_Color(BLACK);
-    	Fill_Rect(0,OLED_MENU_LINE_1 , 5, OLED_MENU_LINE_5);
+    	Fill_Rect(0, OLED_MENU_LINE_1 , 5, OLED_MENU_LINE_5);
     	Set_Color(WHITE);
 
 		switch(oled.line_pointer)
@@ -264,7 +305,20 @@ static void OLED_GUI_MONITORING(void)
         oled.min_pointer  = E_HMI_OLED_LINE_1;
         oled.max_pointer  = E_HMI_OLED_LINE_5;
         oled.menu_flag    = E_HMI_OLED_MENU_OLD;
+
+        Clear_Screen();
+        Set_Color(WHITE);
+        print_String(0, 0, (const uint8_t*)"===== MNTR MENU =====", FONT_5X8);
+        print_String(10, OLED_MENU_LINE_1, (const uint8_t*)"Battery seq :", FONT_5X8);
+        print_String(10, OLED_MENU_LINE_2, (const uint8_t*)"Battery motor1 :", FONT_5X8);
+        print_String(10, OLED_MENU_LINE_3, (const uint8_t*)"Battery motor2 :", FONT_5X8);
     }
+
+    print_String(10, OLED_MENU_LINE_1, (const uint8_t*)uart_data->MNTR.BAT_SEQ, FONT_5X8);
+    print_String(10, OLED_MENU_LINE_2, (const uint8_t*)uart_data->MNTR.BAT_MOTOR1, FONT_5X8);
+    print_String(10, OLED_MENU_LINE_3, (const uint8_t*)uart_data->MNTR.BAT_MOTOR2, FONT_5X8);
+
+    if(button == OLED_BTN_RETURN) OLED_GUI_BTN_RETURN();
 }
 
 /** ************************************************************* *
@@ -280,7 +334,28 @@ static void OLED_GUI_STATUS(void)
         oled.min_pointer  = E_HMI_OLED_LINE_1;
         oled.max_pointer  = E_HMI_OLED_LINE_5;
         oled.menu_flag    = E_HMI_OLED_MENU_OLD;
+
+        Clear_Screen();
+        Set_Color(WHITE);
+        print_String(0, 0, (const uint8_t*)"===== STATUS MENU =====", FONT_5X8);
+        print_String(10, OLED_MENU_LINE_1, (const uint8_t*)"Phase :", FONT_5X8);
+        print_String(10, OLED_MENU_LINE_2, (const uint8_t*)"Aerocontact :", FONT_5X8);
+
+        print_String(10, OLED_MENU_LINE_4, (const uint8_t*)"Recovery :", FONT_5X8);
+        print_String(10, OLED_MENU_LINE_5, (const uint8_t*)"last cmd :", FONT_5X8);
+
+        print_String(10, OLED_MENU_LINE_7, (const uint8_t*)"Recovery :", FONT_5X8);
+        print_String(10, OLED_MENU_LINE_8, (const uint8_t*)"last cmd :", FONT_5X8);
     }
+
+    print_String(10, OLED_MENU_LINE_1, (const uint8_t*)uart_data->APP.PHASE, FONT_5X8);
+    print_String(10, OLED_MENU_LINE_2, (const uint8_t*)uart_data->APP.AEROC, FONT_5X8);
+    print_String(10, OLED_MENU_LINE_4, (const uint8_t*)uart_data->RECOVERY.STATUS, FONT_5X8);
+    print_String(10, OLED_MENU_LINE_5, (const uint8_t*)uart_data->RECOVERY.LAST_CMD, FONT_5X8);
+    print_String(10, OLED_MENU_LINE_7, (const uint8_t*)uart_data->PAYLOAD.STATUS, FONT_5X8);
+    print_String(10, OLED_MENU_LINE_8, (const uint8_t*)uart_data->PAYLOAD.LAST_CMD, FONT_5X8);
+
+    if(button == OLED_BTN_RETURN) OLED_GUI_BTN_RETURN();
 }
 
 /** ************************************************************* *
@@ -297,6 +372,8 @@ static void OLED_GUI_DATA(void)
         oled.max_pointer  = E_HMI_OLED_LINE_5;
         oled.menu_flag    = E_HMI_OLED_MENU_OLD;
     }
+
+    if(button == OLED_BTN_RETURN) OLED_GUI_BTN_RETURN();
 }
 
 /** ************************************************************* *
@@ -313,8 +390,12 @@ static void OLED_GUI_SLEEP(void)
         oled.max_pointer  = E_HMI_OLED_LINE_0;
         oled.menu_flag    = E_HMI_OLED_MENU_OLD;
 
+        Clear_Screen();
+        Set_Color(WHITE);
         print_String(30, 30, (const uint8_t*)"POWER SAVING MODE", FONT_5X8);
     }
+
+    if(button == OLED_BTN_RETURN) OLED_GUI_BTN_RETURN();
 }
 
 /** ************************************************************* *
@@ -325,8 +406,10 @@ static void OLED_GUI_RESET(void)
 {
     /* restart the SEQ software */
     HAL_GPIO_WritePin(SEQ_RST_GPIO_Port, SEQ_RST_Pin, GPIO_PIN_SET);
+
+    vTaskDelay(pdMS_TO_TICKS(10));
     
-    /* restart the HMI software */
+    /* restart the CPU */
 	SCB->AIRCR = 0x05fa0004;
 }
 
@@ -344,9 +427,8 @@ void API_HMI_START(void)
     leds_init();
     leds_send_cmd(E_LIST_LED5, E_CMD_LEDS_GREEN);
 
-    uart_init(&parsed_data);
-
-    bouttons_init(&button);
+    uart_init();
+    uart_storage_attach(uart_data);
 
     /* oled */ 
     Device_Init();
@@ -357,6 +439,16 @@ void API_HMI_START(void)
     /* create the task */
     status = xTaskCreate(handler_oled, "task_oled", configMINIMAL_STACK_SIZE, NULL, TASK_PRIORITY_APP_OLED, &TaskHandle_oled);
     configASSERT(status == pdPASS);
+}
+
+/** ************************************************************* *
+ * @brief       
+ * 
+ * @param       btn 
+ * ************************************************************* **/
+void API_HMI_CALLBACK(ENUM_BTN_LIST_t btn)
+{
+    xQueueSendFromISR(QueueHandle_btn, &btn, (TickType_t)0);
 }
 
 /* ------------------------------------------------------------- --

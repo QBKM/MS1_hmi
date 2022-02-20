@@ -170,25 +170,25 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     {
         case BTN1_Pin :
             //SEGGER_SYSVIEW_RecordEnterISR();
-            callback_buttons(E_BTN_1);
+            API_HMI_CALLBACK(E_BTN_1);
             //SEGGER_SYSVIEW_RecordExitISR();
             break;
 
         case BTN2_Pin :
             //SEGGER_SYSVIEW_RecordEnterISR();
-            callback_buttons(E_BTN_2);
+            API_HMI_CALLBACK(E_BTN_2);
             //SEGGER_SYSVIEW_RecordExitISR();
             break;
 
         case BTN3_Pin :
             //SEGGER_SYSVIEW_RecordEnterISR();
-            callback_buttons(E_BTN_3);
+            API_HMI_CALLBACK(E_BTN_3);
             //SEGGER_SYSVIEW_RecordExitISR();
             break;
 
         case BTN4_Pin :
             //SEGGER_SYSVIEW_RecordEnterISR();
-            callback_buttons(E_BTN_4);
+            API_HMI_CALLBACK(E_BTN_4);
             //SEGGER_SYSVIEW_RecordExitISR();
             break;
         
