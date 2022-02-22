@@ -160,6 +160,7 @@ static void handler_oled(void* parameters)
 static void OLED_GUI_BTN_UP(void)
 {
     oled.line_pointer = (oled.line_pointer >= oled.max_pointer) ? oled.max_pointer : oled.line_pointer +1;
+    button = E_BTN_NONE;
 }
 
 /** ************************************************************* *
@@ -169,6 +170,7 @@ static void OLED_GUI_BTN_UP(void)
 static void OLED_GUI_BTN_DOWN(void)
 {
     oled.line_pointer = (oled.line_pointer <= oled.min_pointer) ? oled.min_pointer : oled.line_pointer -1;
+    button = E_BTN_NONE;
 }
 
 /** ************************************************************* *
@@ -191,6 +193,9 @@ static void OLED_GUI_BTN_OK(void)
         case E_HMI_OLED_LINE_9: break;
         default: break;
     }
+
+    oled.menu_flag = E_HMI_OLED_MENU_NEW;
+    button = E_BTN_NONE;
 }
 
 /** ************************************************************* *
@@ -270,8 +275,6 @@ static void OLED_GUI_MAIN(void)
         default: break;
     }
 
-    button = E_BTN_NONE;
-
     /* pointer management */
     if(last_pointer != oled.line_pointer)
     {
@@ -337,23 +340,23 @@ static void OLED_GUI_STATUS(void)
 
         Clear_Screen();
         Set_Color(WHITE);
-        print_String(0, 0, (const uint8_t*)"===== STATUS MENU =====", FONT_5X8);
-        print_String(10, OLED_MENU_LINE_1, (const uint8_t*)"Phase :", FONT_5X8);
-        print_String(10, OLED_MENU_LINE_2, (const uint8_t*)"Aerocontact :", FONT_5X8);
+        print_String(0, 0, (const uint8_t*)"===== STATUS =====", FONT_5X8);
+        print_String(0, OLED_MENU_LINE_1, (const uint8_t*)"Phase    :", FONT_5X8);
+        print_String(0, OLED_MENU_LINE_2, (const uint8_t*)"Aeroc    :", FONT_5X8);
 
-        print_String(10, OLED_MENU_LINE_4, (const uint8_t*)"Recovery :", FONT_5X8);
-        print_String(10, OLED_MENU_LINE_5, (const uint8_t*)"last cmd :", FONT_5X8);
+        print_String(0, OLED_MENU_LINE_4, (const uint8_t*)"Recovery :", FONT_5X8);
+        print_String(0, OLED_MENU_LINE_5, (const uint8_t*)"last cmd :", FONT_5X8);
 
-        print_String(10, OLED_MENU_LINE_7, (const uint8_t*)"Recovery :", FONT_5X8);
-        print_String(10, OLED_MENU_LINE_8, (const uint8_t*)"last cmd :", FONT_5X8);
+        print_String(0, OLED_MENU_LINE_7, (const uint8_t*)"Recovery :", FONT_5X8);
+        print_String(0, OLED_MENU_LINE_8, (const uint8_t*)"last cmd :", FONT_5X8);
     }
 
-    print_String(10, OLED_MENU_LINE_1, (const uint8_t*)uart_data->APP.PHASE, FONT_5X8);
-    print_String(10, OLED_MENU_LINE_2, (const uint8_t*)uart_data->APP.AEROC, FONT_5X8);
-    print_String(10, OLED_MENU_LINE_4, (const uint8_t*)uart_data->RECOVERY.STATUS, FONT_5X8);
-    print_String(10, OLED_MENU_LINE_5, (const uint8_t*)uart_data->RECOVERY.LAST_CMD, FONT_5X8);
-    print_String(10, OLED_MENU_LINE_7, (const uint8_t*)uart_data->PAYLOAD.STATUS, FONT_5X8);
-    print_String(10, OLED_MENU_LINE_8, (const uint8_t*)uart_data->PAYLOAD.LAST_CMD, FONT_5X8);
+    print_String(70, OLED_MENU_LINE_1, (const uint8_t*)uart_data->APP.PHASE, FONT_5X8);
+    print_String(70, OLED_MENU_LINE_2, (const uint8_t*)uart_data->APP.AEROC, FONT_5X8);
+    print_String(70, OLED_MENU_LINE_4, (const uint8_t*)uart_data->RECOVERY.STATUS, FONT_5X8);
+    print_String(70, OLED_MENU_LINE_5, (const uint8_t*)uart_data->RECOVERY.LAST_CMD, FONT_5X8);
+    print_String(70, OLED_MENU_LINE_7, (const uint8_t*)uart_data->PAYLOAD.STATUS, FONT_5X8);
+    print_String(70, OLED_MENU_LINE_8, (const uint8_t*)uart_data->PAYLOAD.LAST_CMD, FONT_5X8);
 
     if(button == OLED_BTN_RETURN) OLED_GUI_BTN_RETURN();
 }
@@ -428,13 +431,15 @@ void API_HMI_START(void)
     leds_send_cmd(E_LIST_LED5, E_CMD_LEDS_GREEN);
 
     uart_init();
-    uart_storage_attach(uart_data);
+    uart_data = uart_storage_attach();
 
     /* oled */ 
     Device_Init();
     Clear_Screen();
-    oled.OLED_GUI_MENU = OLED_GUI_START;
+    oled.OLED_GUI_MENU = OLED_GUI_STATUS;
     oled.menu_flag = E_HMI_OLED_MENU_NEW;
+
+    QueueHandle_btn = xQueueCreate(1, sizeof(ENUM_BTN_LIST_t));
 
     /* create the task */
     status = xTaskCreate(handler_oled, "task_oled", configMINIMAL_STACK_SIZE, NULL, TASK_PRIORITY_APP_OLED, &TaskHandle_oled);

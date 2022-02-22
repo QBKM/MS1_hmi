@@ -9,7 +9,6 @@
 "./Components/Utils/payload_builder.o"
 "./Components/Utils/payload_parser.o"
 "./Components/Utils/utils.o"
-"./Core/Src/dma.o"
 "./Core/Src/gpio.o"
 "./Core/Src/main.o"
 "./Core/Src/spi.o"

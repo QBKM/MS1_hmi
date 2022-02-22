@@ -109,12 +109,16 @@ void Error_Handler(void);
 #define TCK_GPIO_Port GPIOA
 #define BTN1_Pin GPIO_PIN_4
 #define BTN1_GPIO_Port GPIOB
+#define BTN1_EXTI_IRQn EXTI4_IRQn
 #define BTN2_Pin GPIO_PIN_5
 #define BTN2_GPIO_Port GPIOB
+#define BTN2_EXTI_IRQn EXTI9_5_IRQn
 #define BTN3_Pin GPIO_PIN_6
 #define BTN3_GPIO_Port GPIOB
+#define BTN3_EXTI_IRQn EXTI9_5_IRQn
 #define BTN4_Pin GPIO_PIN_7
 #define BTN4_GPIO_Port GPIOB
+#define BTN4_EXTI_IRQn EXTI9_5_IRQn
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

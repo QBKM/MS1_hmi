@@ -78,6 +78,6 @@ typedef struct
 
 void uart_init(void);
 void uart_parser_callback(uint8_t* frame);
-void uart_storage_attach(STRUCT_UART_STORAGE_t* storage);
+STRUCT_UART_STORAGE_t* uart_storage_attach(void);
 
 #endif

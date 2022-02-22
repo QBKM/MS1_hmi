@@ -18,7 +18,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "dma.h"
 #include "spi.h"
 #include "usart.h"
 #include "gpio.h"
@@ -54,7 +53,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-uint8_t RxBuffer[16] = {0};
+uint8_t RxBuffer[FRAME_SIZE] = {0};
 
 /* USER CODE END PFP */
 
@@ -92,11 +91,13 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
-  MX_DMA_Init();
   MX_SPI1_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
 
   API_HMI_START();
+
+  HAL_UART_Receive_IT(&huart3, RxBuffer, FRAME_SIZE);
 
   vTaskStartScheduler();
 
@@ -199,9 +200,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-
-    HAL_UART_Receive_DMA(&huart2, RxBuffer, FRAME_SIZE);
     uart_parser_callback(RxBuffer);
+    HAL_UART_Receive_IT(&huart3, RxBuffer, FRAME_SIZE);
 }
 
 /* USER CODE END 4 */

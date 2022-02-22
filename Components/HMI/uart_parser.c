@@ -24,7 +24,7 @@ TaskHandle_t TaskHandle_uart;
 static void handler_uart(void* parameters);
 
 /* UART id parsing fucntions */
-static TF_Result id_parser_app_phase(TinyFrame *tf, TF_Msg *msg);
+TF_Result id_parser_app_phase(TinyFrame *tf, TF_Msg *msg);
 static TF_Result id_parser_app_window(TinyFrame *tf, TF_Msg *msg);
 static TF_Result id_parser_app_aeroc(TinyFrame *tf, TF_Msg *msg);
 static TF_Result id_parser_sens_imu_ax(TinyFrame *tf, TF_Msg *msg);
@@ -57,9 +57,9 @@ void handler_uart(void* parameters)
 
     while(1)
     {
-        if(xQueueReceive(QueueHandle_uart, &frame, portMAX_DELAY) == pdTRUE)
+        if(xQueueReceive(QueueHandle_uart, frame, portMAX_DELAY) == pdTRUE)
         {
-            TF_Accept(TinyFrame_RX, frame, FRAME_SIZE);
+            TF_Accept(TinyFrame_RX, frame, 128);
         }
     }
 }
@@ -86,6 +86,8 @@ void uart_init(void)
 {
     BaseType_t status;
 
+    TinyFrame_RX = TF_Init(TF_SLAVE); // 1 = master, 0 = slave
+
     /* subscribe for all message id */
     TF_AddTypeListener(TinyFrame_RX, HMI_ID_APP_PHASE, id_parser_app_phase);
     TF_AddTypeListener(TinyFrame_RX, HMI_ID_APP_WINDOW, id_parser_app_window);
@@ -109,7 +111,7 @@ void uart_init(void)
     TF_AddTypeListener(TinyFrame_RX, HMI_ID_PAYLOAD_LAST_CMD, id_parser_payload_last_cmd);
     TF_AddTypeListener(TinyFrame_RX, HMI_ID_PAYLOAD_STATUS, id_parser_payload_status);
 
-    QueueHandle_uart = xQueueCreate (32, sizeof(uint8_t*));
+    QueueHandle_uart = xQueueCreate (16, FRAME_SIZE * sizeof(uint8_t));
     status = xTaskCreate(handler_uart, "task_uart", configMINIMAL_STACK_SIZE, NULL, TASK_PRIORITY_APP_UART, &TaskHandle_uart);
     configASSERT(status == pdPASS);
 }
@@ -121,7 +123,7 @@ void uart_init(void)
  * ************************************************************* **/
 void uart_parser_callback(uint8_t* frame)
 {
-    xQueueSendFromISR(QueueHandle_uart, &frame, pdFALSE);
+    xQueueSendFromISR(QueueHandle_uart, frame, pdFALSE);
 }
 
 /** ************************************************************* *
@@ -129,7 +131,7 @@ void uart_parser_callback(uint8_t* frame)
  * 
  * @param       data 
  * ************************************************************* **/
-static TF_Result id_parser_app_phase(TinyFrame *tf, TF_Msg *msg)
+TF_Result id_parser_app_phase(TinyFrame *tf, TF_Msg *msg)
 {
     memcpy(uart_storage.APP.PHASE, (char*)(tf->data), sizeof(PAYLOAD_SIZE));
 
@@ -432,7 +434,7 @@ static TF_Result id_parser_payload_status(TinyFrame *tf, TF_Msg *msg)
  * 
  * @return      STRUCT_UART_STORAGE_t* 
  * ************************************************************* **/
-void uart_storage_attach(STRUCT_UART_STORAGE_t* storage)
+STRUCT_UART_STORAGE_t* uart_storage_attach(void)
 {
-   storage = &uart_storage;
+   return &uart_storage;
 }

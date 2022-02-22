@@ -58,9 +58,6 @@ void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOA, SEQ_RST_Pin|SSD1351_NSS_Pin|SSD1351_DC_Pin|RGB2_G_Pin
                           |RGB2_R_Pin|RGB1_B_Pin|RGB1_G_Pin|RGB1_R_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, BTN1_Pin|BTN2_Pin|BTN3_Pin|BTN4_Pin, GPIO_PIN_RESET);
-
   /*Configure GPIO pins : PCPin PCPin PCPin PCPin
                            PCPin PCPin PCPin PCPin
                            PCPin PCPin */
@@ -104,10 +101,16 @@ void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : PBPin PBPin PBPin PBPin */
   GPIO_InitStruct.Pin = BTN1_Pin|BTN2_Pin|BTN3_Pin|BTN4_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI4_IRQn, 6, 0);
+  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 6, 0);
+  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
 }
 
