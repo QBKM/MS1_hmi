@@ -13,11 +13,11 @@
 /* ------------------------------------------------------------- --
    include
 -- ------------------------------------------------------------- */
-#include "leds.h"
 #include "freeRtos.h"
 #include "task.h"
-#include "gpio.h"
 #include "queue.h"
+#include "gpio.h"
+#include "leds.h"
 
 #include "MS1_config.h"
 
