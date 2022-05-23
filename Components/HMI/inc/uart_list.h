@@ -36,11 +36,13 @@
 #define HMI_ID_SENS_IMU_GX          (uint8_t)0x23
 #define HMI_ID_SENS_IMU_GY          (uint8_t)0x24
 #define HMI_ID_SENS_IMU_GZ          (uint8_t)0x25
-#define HMI_ID_SENS_IMU_TEMP        (uint8_t)0x26
-#define HMI_ID_SENS_IMU_ERROR       (uint8_t)0x27
-#define HMI_ID_SENS_BARO_PRESS      (uint8_t)0x28
-#define HMI_ID_SENS_BARO_TEMP       (uint8_t)0x29
-#define HMI_ID_SENS_BARO_ERROR      (uint8_t)0x2A
+#define HMI_ID_SENS_IMU_X_KALMAN    (uint8_t)0x26
+#define HMI_ID_SENS_IMU_Y_KALMAN    (uint8_t)0x27
+#define HMI_ID_SENS_IMU_TEMP        (uint8_t)0x28
+#define HMI_ID_SENS_IMU_ERROR       (uint8_t)0x29
+#define HMI_ID_SENS_BARO_PRESS      (uint8_t)0x2A
+#define HMI_ID_SENS_BARO_TEMP       (uint8_t)0x2B
+#define HMI_ID_SENS_BARO_ERROR      (uint8_t)0x2C
 
 /* monitoring IDs */
 #define HMI_ID_MNTR_BAT_SEQ         (uint8_t)0x30

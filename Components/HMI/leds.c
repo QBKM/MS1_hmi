@@ -251,27 +251,35 @@ void leds_init(void)
 {
     BaseType_t status;
 
-    HAL_GPIO_WritePin(RGB1_R_GPIO_Port, RGB1_R_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(RGB1_G_GPIO_Port, RGB1_G_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(RGB1_B_GPIO_Port, RGB1_B_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(RGB1_R_GPIO_Port, RGB1_R_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(RGB1_G_GPIO_Port, RGB1_G_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(RGB1_B_GPIO_Port, RGB1_B_Pin, GPIO_PIN_SET);
 
-    HAL_GPIO_WritePin(RGB2_R_GPIO_Port, RGB2_R_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(RGB2_G_GPIO_Port, RGB2_G_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(RGB2_B_GPIO_Port, RGB2_B_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(RGB2_R_GPIO_Port, RGB2_R_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(RGB2_G_GPIO_Port, RGB2_G_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(RGB2_B_GPIO_Port, RGB2_B_Pin, GPIO_PIN_SET);
     
+    HAL_GPIO_WritePin(RGB3_R_GPIO_Port, RGB3_R_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(RGB3_G_GPIO_Port, RGB3_G_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(RGB3_B_GPIO_Port, RGB3_B_Pin, GPIO_PIN_SET);
+
+    HAL_GPIO_WritePin(RGB4_R_GPIO_Port, RGB4_R_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(RGB4_G_GPIO_Port, RGB4_G_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(RGB4_B_GPIO_Port, RGB4_B_Pin, GPIO_PIN_SET);
+
+    HAL_GPIO_WritePin(RGB5_R_GPIO_Port, RGB5_R_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(RGB5_G_GPIO_Port, RGB5_G_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(RGB5_B_GPIO_Port, RGB5_B_Pin, GPIO_PIN_SET);
+
+
+
+    HAL_GPIO_WritePin(RGB1_R_GPIO_Port, RGB1_R_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(RGB2_R_GPIO_Port, RGB2_R_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(RGB3_R_GPIO_Port, RGB3_R_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(RGB3_G_GPIO_Port, RGB3_G_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(RGB3_B_GPIO_Port, RGB3_B_Pin, GPIO_PIN_RESET);
-
     HAL_GPIO_WritePin(RGB4_R_GPIO_Port, RGB4_R_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(RGB4_G_GPIO_Port, RGB4_G_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(RGB4_B_GPIO_Port, RGB4_B_Pin, GPIO_PIN_RESET);
-
     HAL_GPIO_WritePin(RGB5_R_GPIO_Port, RGB5_R_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(RGB5_G_GPIO_Port, RGB5_G_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(RGB5_B_GPIO_Port, RGB5_B_Pin, GPIO_PIN_RESET);
 
-    HAL_Delay(200);
+    HAL_Delay(500);
 
     /* */ 
     HAL_GPIO_WritePin(RGB1_R_GPIO_Port, RGB1_R_Pin, GPIO_PIN_SET);
@@ -280,31 +288,35 @@ void leds_init(void)
     HAL_GPIO_WritePin(RGB4_R_GPIO_Port, RGB4_R_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(RGB5_R_GPIO_Port, RGB5_R_Pin, GPIO_PIN_SET);
 
-    HAL_Delay(200);
+    /* */
+    HAL_GPIO_WritePin(RGB1_G_GPIO_Port, RGB1_G_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(RGB2_G_GPIO_Port, RGB2_G_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(RGB3_G_GPIO_Port, RGB3_G_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(RGB4_G_GPIO_Port, RGB4_G_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(RGB5_G_GPIO_Port, RGB5_G_Pin, GPIO_PIN_RESET);
 
-    /* */ 
+    HAL_Delay(500);
+
     HAL_GPIO_WritePin(RGB1_G_GPIO_Port, RGB1_G_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(RGB2_G_GPIO_Port, RGB2_G_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(RGB3_G_GPIO_Port, RGB3_G_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(RGB4_G_GPIO_Port, RGB4_G_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(RGB5_G_GPIO_Port, RGB5_G_Pin, GPIO_PIN_SET);
 
-    HAL_Delay(200);
-
     /* */ 
+    HAL_GPIO_WritePin(RGB1_B_GPIO_Port, RGB1_B_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(RGB2_B_GPIO_Port, RGB2_B_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(RGB3_B_GPIO_Port, RGB3_B_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(RGB4_B_GPIO_Port, RGB4_B_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(RGB5_B_GPIO_Port, RGB5_B_Pin, GPIO_PIN_RESET);
+
+    HAL_Delay(500);
+
     HAL_GPIO_WritePin(RGB1_B_GPIO_Port, RGB1_B_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(RGB2_B_GPIO_Port, RGB2_B_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(RGB3_B_GPIO_Port, RGB3_B_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(RGB4_B_GPIO_Port, RGB4_B_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(RGB5_B_GPIO_Port, RGB5_B_Pin, GPIO_PIN_SET);
-
-    HAL_Delay(1000);
-
-    HAL_GPIO_WritePin(RGB1_R_GPIO_Port, RGB1_R_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(RGB2_R_GPIO_Port, RGB2_R_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(RGB3_R_GPIO_Port, RGB3_R_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(RGB4_R_GPIO_Port, RGB4_R_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(RGB5_R_GPIO_Port, RGB5_R_Pin, GPIO_PIN_RESET);
 
     /* create the queues */
     QueueHandle_leds_cmd  = xQueueCreate(32, sizeof(ENUM_LEDS_CMD_t));
