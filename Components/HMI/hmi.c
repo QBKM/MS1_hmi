@@ -50,8 +50,8 @@
 #define OLED_MENU_LINE_8		72
 
 #define OLED_BTN_NONE       E_BTN_NONE
-#define OLED_BTN_UP         E_BTN_1
-#define OLED_BTN_DOWN       E_BTN_3
+#define OLED_BTN_UP         E_BTN_3
+#define OLED_BTN_DOWN       E_BTN_1
 #define OLED_BTN_OK         E_BTN_2
 #define OLED_BTN_RETURN     E_BTN_4
 
@@ -436,7 +436,7 @@ void API_HMI_START(void)
     /* oled */ 
     Device_Init();
     Clear_Screen();
-    oled.OLED_GUI_MENU = OLED_GUI_STATUS;
+    oled.OLED_GUI_MENU = OLED_GUI_START;
     oled.menu_flag = E_HMI_OLED_MENU_NEW;
 
     QueueHandle_btn = xQueueCreate(1, sizeof(ENUM_BTN_LIST_t));
