@@ -28,15 +28,9 @@ typedef struct
 
 typedef struct
 {
-    uint8_t IMU_AX[PAYLOAD_SIZE];
-    uint8_t IMU_AY[PAYLOAD_SIZE];
-    uint8_t IMU_AZ[PAYLOAD_SIZE];
-    uint8_t IMU_GX[PAYLOAD_SIZE];
-    uint8_t IMU_GY[PAYLOAD_SIZE];
-    uint8_t IMU_GZ[PAYLOAD_SIZE];
-    uint8_t IMU_TEMP[PAYLOAD_SIZE];
+    uint8_t IMU_X_KALMAN[PAYLOAD_SIZE];
+    uint8_t IMU_Y_KALMAN[PAYLOAD_SIZE];
     uint8_t BARO_PRESS[PAYLOAD_SIZE];
-    uint8_t BARO_TEMP[PAYLOAD_SIZE];
 }STRUCT_UART_SENSOR_t;
 
 typedef struct
@@ -58,12 +52,6 @@ typedef struct
     uint8_t STATUS[PAYLOAD_SIZE];
 }STRUCT_UART_PAYLOAD_t;
 
-typedef struct
-{
-    uint8_t IMU[PAYLOAD_SIZE];
-    uint8_t BARO[PAYLOAD_SIZE];
-}STRUCT_UART_ERROR_t;
-
 
 typedef struct
 {
@@ -72,7 +60,6 @@ typedef struct
     STRUCT_UART_MNTR_t      MNTR;
     STRUCT_UART_RECOVERY_t  RECOVERY;
     STRUCT_UART_PAYLOAD_t   PAYLOAD;
-    STRUCT_UART_ERROR_t     ERROR;
 }STRUCT_UART_STORAGE_t;
 
 
