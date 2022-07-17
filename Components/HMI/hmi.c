@@ -124,9 +124,7 @@ static void OLED_GUI_BTN_RETURN(void);
 /* menu GUI */
 static void OLED_GUI_START(void);
 static void OLED_GUI_MAIN(void);
-static void OLED_GUI_MONITORING(void);
 static void OLED_GUI_STATUS(void);
-static void OLED_GUI_DATA(void);
 static void OLED_GUI_SLEEP(void);
 static void OLED_GUI_RESET(void);
 
@@ -190,10 +188,10 @@ static void OLED_GUI_BTN_OK(void)
     {
         case E_HMI_OLED_LINE_0: break;
         case E_HMI_OLED_LINE_1: oled.OLED_GUI_MENU = OLED_GUI_STATUS; break;
-        case E_HMI_OLED_LINE_2: oled.OLED_GUI_MENU = OLED_GUI_DATA; break;
-        case E_HMI_OLED_LINE_3: oled.OLED_GUI_MENU = OLED_GUI_SLEEP; break;
-        case E_HMI_OLED_LINE_4: oled.OLED_GUI_MENU = OLED_GUI_RESET; break;
-        case E_HMI_OLED_LINE_5: 
+        case E_HMI_OLED_LINE_2: oled.OLED_GUI_MENU = OLED_GUI_SLEEP; break;
+        case E_HMI_OLED_LINE_3: oled.OLED_GUI_MENU = OLED_GUI_RESET; break;
+        case E_HMI_OLED_LINE_4: break;
+        case E_HMI_OLED_LINE_5: break;
         case E_HMI_OLED_LINE_6: break;
         case E_HMI_OLED_LINE_7: break;
         case E_HMI_OLED_LINE_8: break;
@@ -233,7 +231,7 @@ static void OLED_GUI_START(void)
         Clear_Screen();
         Set_Color(WHITE);
 
-        oled.OLED_GUI_MENU = OLED_GUI_MAIN;
+        oled.OLED_GUI_MENU = OLED_GUI_STATUS;
         oled.menu_flag = E_HMI_OLED_MENU_NEW;
     }
 }
@@ -251,16 +249,15 @@ static void OLED_GUI_MAIN(void)
         //seeting for the menu
         oled.line_pointer = E_HMI_OLED_LINE_1;
         oled.min_pointer  = E_HMI_OLED_LINE_1;
-        oled.max_pointer  = E_HMI_OLED_LINE_4;
+        oled.max_pointer  = E_HMI_OLED_LINE_3;
         oled.menu_flag    = E_HMI_OLED_MENU_OLD;
 
         Clear_Screen();
         Set_Color(WHITE);
         print_String(0, 0, (const uint8_t*)"===== MAIN MENU =====", FONT_5X8);
         print_String(10, OLED_MENU_LINE_1, (const uint8_t*)"Status", FONT_5X8);
-        print_String(10, OLED_MENU_LINE_2, (const uint8_t*)"Data", FONT_5X8);
-        print_String(10, OLED_MENU_LINE_3, (const uint8_t*)"Sleep", FONT_5X8);
-        print_String(10, OLED_MENU_LINE_4, (const uint8_t*)"Reset", FONT_5X8);
+        print_String(10, OLED_MENU_LINE_2, (const uint8_t*)"Sleep", FONT_5X8);
+        print_String(10, OLED_MENU_LINE_3, (const uint8_t*)"Reset", FONT_5X8);
         print_String(0,  OLED_MENU_LINE_1, (const uint8_t*)">", FONT_5X8);
     }
 
@@ -298,43 +295,10 @@ static void OLED_GUI_MAIN(void)
  * @brief       
  * 
  * ************************************************************* **/
-static void OLED_GUI_MONITORING(void)
-{
-    if(oled.menu_flag == E_HMI_OLED_MENU_NEW)
-    {
-        //seeting for the menu
-        oled.line_pointer = E_HMI_OLED_LINE_1;
-        oled.min_pointer  = E_HMI_OLED_LINE_1;
-        oled.max_pointer  = E_HMI_OLED_LINE_5;
-        oled.menu_flag    = E_HMI_OLED_MENU_OLD;
-
-        Clear_Screen();
-        Set_Color(WHITE);
-        print_String(0, 0, (const uint8_t*)"===== MNTR MENU =====", FONT_5X8);
-        print_String(0, OLED_MENU_LINE_1, (const uint8_t*)"Vbat Seq :", FONT_5X8);
-        print_String(0, OLED_MENU_LINE_2, (const uint8_t*)"Vbat M1  :", FONT_5X8);
-        print_String(0, OLED_MENU_LINE_3, (const uint8_t*)"Vbat M2  :", FONT_5X8);
-    }
-
-    print_String(30, OLED_MENU_LINE_1, (const uint8_t*)uart_data->MNTR.BAT_SEQ, FONT_5X8);
-    print_String(30, OLED_MENU_LINE_2, (const uint8_t*)uart_data->MNTR.BAT_MOTOR1, FONT_5X8);
-    print_String(30, OLED_MENU_LINE_3, (const uint8_t*)uart_data->MNTR.BAT_MOTOR2, FONT_5X8);
-
-    if(button == OLED_BTN_RETURN) OLED_GUI_BTN_RETURN();
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * ************************************************************* **/
 static void OLED_GUI_STATUS(void)
 {
     if(oled.menu_flag == E_HMI_OLED_MENU_NEW)
     {
-        //seeting for the menu
-        oled.line_pointer = E_HMI_OLED_LINE_1;
-        oled.min_pointer  = E_HMI_OLED_LINE_1;
-        oled.max_pointer  = E_HMI_OLED_LINE_5;
         oled.menu_flag    = E_HMI_OLED_MENU_OLD;
 
         Clear_Screen();
@@ -354,54 +318,69 @@ static void OLED_GUI_STATUS(void)
         print_String(0, OLED_MENU_LINE_12, (const uint8_t*)"Bat M2   :", FONT_5X8);
     }
 
-    print_String(70, OLED_MENU_LINE_1, (const uint8_t*)"        ", FONT_5X8);
-    print_String(70, OLED_MENU_LINE_1, (const uint8_t*)uart_data->APP.PHASE, FONT_5X8);
-    print_String(70, OLED_MENU_LINE_2, (const uint8_t*)"        ", FONT_5X8);
-    print_String(70, OLED_MENU_LINE_2, (const uint8_t*)uart_data->APP.AEROC, FONT_5X8);
+    static STRUCT_UART_APP_t app = {0};
+    static STRUCT_UART_RECOVERY_t recovery = {0};
+    static STRUCT_UART_PAYLOAD_t payload = {0}; 
+    static STRUCT_UART_MNTR_t mntr = {0};
 
-    print_String(70, OLED_MENU_LINE_4, (const uint8_t*)uart_data->RECOVERY.STATUS, FONT_5X8);
-    print_String(70, OLED_MENU_LINE_5, (const uint8_t*)uart_data->RECOVERY.LAST_CMD, FONT_5X8);
-
-    print_String(70, OLED_MENU_LINE_7, (const uint8_t*)uart_data->PAYLOAD.STATUS, FONT_5X8);
-    print_String(70, OLED_MENU_LINE_8, (const uint8_t*)uart_data->PAYLOAD.LAST_CMD, FONT_5X8);
-
-    print_String(70, OLED_MENU_LINE_10, (const uint8_t*)uart_data->MNTR.BAT_SEQ, FONT_5X8);
-    print_String(70, OLED_MENU_LINE_11, (const uint8_t*)uart_data->MNTR.BAT_MOTOR1, FONT_5X8);
-    print_String(70, OLED_MENU_LINE_12, (const uint8_t*)uart_data->MNTR.BAT_MOTOR2, FONT_5X8);
-
-    if(button == OLED_BTN_RETURN) OLED_GUI_BTN_RETURN();
-}
-
-/** ************************************************************* *
- * @brief       
- * 
- * ************************************************************* **/
-static void OLED_GUI_DATA(void)
-{
-    if(oled.menu_flag == E_HMI_OLED_MENU_NEW)
+    if(!strcmp((char*)app.PHASE, (char*)uart_data->APP.PHASE))
     {
-        //seeting for the menu
-        oled.line_pointer = E_HMI_OLED_LINE_1;
-        oled.min_pointer  = E_HMI_OLED_LINE_1;
-        oled.max_pointer  = E_HMI_OLED_LINE_5;
-        oled.menu_flag    = E_HMI_OLED_MENU_OLD;
-
-        Clear_Screen();
-        Set_Color(WHITE);
-        print_String(0, 0, (const uint8_t*)"======== DATA ========", FONT_5X8);
-        print_String(0, OLED_MENU_LINE_1, (const uint8_t*)"IMU X :", FONT_5X8);
-        print_String(0, OLED_MENU_LINE_2, (const uint8_t*)"IMU Y :", FONT_5X8);
-
-        print_String(0, OLED_MENU_LINE_4, (const uint8_t*)"BARO  :", FONT_5X8);
+        print_String(70, OLED_MENU_LINE_1, (const uint8_t*)"        ", FONT_5X8);
+        print_String(70, OLED_MENU_LINE_1, (const uint8_t*)uart_data->APP.PHASE, FONT_5X8);
     }
 
-    print_String(40, OLED_MENU_LINE_1, (const uint8_t*)"        ", FONT_5X8);
-    print_String(40, OLED_MENU_LINE_1, (const uint8_t*)uart_data->SENSOR.IMU_X_KALMAN, FONT_5X8);
-    print_String(40, OLED_MENU_LINE_2, (const uint8_t*)"        ", FONT_5X8);
-    print_String(40, OLED_MENU_LINE_2, (const uint8_t*)uart_data->SENSOR.IMU_Y_KALMAN, FONT_5X8);
+    if(!strcmp((char*)app.AEROC, (char*)uart_data->APP.AEROC))
+    {
+        print_String(70, OLED_MENU_LINE_2, (const uint8_t*)"        ", FONT_5X8);
+        print_String(70, OLED_MENU_LINE_2, (const uint8_t*)uart_data->APP.AEROC, FONT_5X8);
+    }
 
-    print_String(40, OLED_MENU_LINE_3, (const uint8_t*)"        ", FONT_5X8);
-    print_String(40, OLED_MENU_LINE_4, (const uint8_t*)uart_data->SENSOR.BARO_PRESS, FONT_5X8);
+    if(!strcmp((char*)recovery.STATUS, (char*)uart_data->RECOVERY.STATUS))
+    {
+        print_String(70, OLED_MENU_LINE_4, (const uint8_t*)"        ", FONT_5X8);
+        print_String(70, OLED_MENU_LINE_4, (const uint8_t*)uart_data->RECOVERY.STATUS, FONT_5X8);
+    }
+
+    if(!strcmp((char*)recovery.LAST_CMD, (char*)uart_data->RECOVERY.LAST_CMD))
+    {
+        print_String(70, OLED_MENU_LINE_5, (const uint8_t*)"        ", FONT_5X8);
+        print_String(70, OLED_MENU_LINE_5, (const uint8_t*)uart_data->RECOVERY.LAST_CMD, FONT_5X8);
+    }
+
+    if(!strcmp((char*)payload.STATUS, (char*)uart_data->PAYLOAD.STATUS))
+    {
+        print_String(70, OLED_MENU_LINE_7, (const uint8_t*)"        ", FONT_5X8);
+        print_String(70, OLED_MENU_LINE_7, (const uint8_t*)uart_data->PAYLOAD.STATUS, FONT_5X8);
+    }
+
+    if(!strcmp((char*)payload.LAST_CMD, (char*)uart_data->PAYLOAD.LAST_CMD))
+    {
+        print_String(70, OLED_MENU_LINE_8, (const uint8_t*)"        ", FONT_5X8);
+        print_String(70, OLED_MENU_LINE_8, (const uint8_t*)uart_data->PAYLOAD.LAST_CMD, FONT_5X8);
+    }
+
+    if(!strcmp((char*)mntr.BAT_SEQ, (char*)uart_data->MNTR.BAT_SEQ))
+    {
+        print_String(70, OLED_MENU_LINE_10, (const uint8_t*)"        ", FONT_5X8);
+        print_String(70, OLED_MENU_LINE_10, (const uint8_t*)uart_data->MNTR.BAT_SEQ, FONT_5X8);
+    }
+
+    if(!strcmp((char*)mntr.BAT_MOTOR1, (char*)uart_data->MNTR.BAT_MOTOR1))
+    {
+        print_String(70, OLED_MENU_LINE_11, (const uint8_t*)"        ", FONT_5X8);
+        print_String(70, OLED_MENU_LINE_11, (const uint8_t*)uart_data->MNTR.BAT_MOTOR1, FONT_5X8);
+    }
+
+    if(!strcmp((char*)mntr.BAT_MOTOR2, (char*)uart_data->MNTR.BAT_MOTOR2))
+    {
+        print_String(70, OLED_MENU_LINE_12, (const uint8_t*)"        ", FONT_5X8);
+        print_String(70, OLED_MENU_LINE_12, (const uint8_t*)uart_data->MNTR.BAT_MOTOR2, FONT_5X8);
+    }
+
+    memcpy(&app, &uart_data->APP, sizeof(STRUCT_UART_APP_t));
+    memcpy(&recovery, &uart_data->RECOVERY, sizeof(STRUCT_UART_RECOVERY_t));
+    memcpy(&payload, &uart_data->PAYLOAD, sizeof(STRUCT_UART_PAYLOAD_t));
+    memcpy(&mntr, &uart_data->MNTR, sizeof(STRUCT_UART_MNTR_t));
 
     if(button == OLED_BTN_RETURN) OLED_GUI_BTN_RETURN();
 }
@@ -414,10 +393,6 @@ static void OLED_GUI_SLEEP(void)
 {
     if(oled.menu_flag == E_HMI_OLED_MENU_NEW)
     {
-        //seeting for the menu
-        oled.line_pointer = E_HMI_OLED_LINE_0;
-        oled.min_pointer  = E_HMI_OLED_LINE_0;
-        oled.max_pointer  = E_HMI_OLED_LINE_0;
         oled.menu_flag    = E_HMI_OLED_MENU_OLD;
 
         Clear_Screen();
